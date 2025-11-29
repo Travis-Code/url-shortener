@@ -11,6 +11,7 @@ interface URL {
   description: string;
   clicks: number;
   created_at: string;
+  expires_at: string | null;
 }
 
 const Dashboard: React.FC = () => {
@@ -18,6 +19,7 @@ const Dashboard: React.FC = () => {
   const [originalUrl, setOriginalUrl] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [expiresAt, setExpiresAt] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -44,11 +46,12 @@ const Dashboard: React.FC = () => {
     setLoading(true);
 
     try {
-      await urlApi.createUrl(originalUrl, title, description);
+      await urlApi.createUrl(originalUrl, title, description, expiresAt || undefined);
       setSuccess('Short URL created successfully!');
       setOriginalUrl('');
       setTitle('');
       setDescription('');
+      setExpiresAt('');
       fetchUrls();
     } catch (err: any) {
       setError(err.response?.data?.error || 'Failed to create short URL');
@@ -148,6 +151,21 @@ const Dashboard: React.FC = () => {
               />
             </div>
 
+            <div>
+              <label htmlFor="expiresAt" className="block text-sm font-medium text-gray-700">
+                Expiration Date (optional)
+              </label>
+              <input
+                type="datetime-local"
+                id="expiresAt"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                value={expiresAt}
+                onChange={(e) => setExpiresAt(e.target.value)}
+                min={new Date().toISOString().slice(0, 16)}
+              />
+              <p className="mt-1 text-sm text-gray-500">Link will become inaccessible after this date</p>
+            </div>
+
             <button
               type="submit"
               disabled={loading}
@@ -173,12 +191,15 @@ const Dashboard: React.FC = () => {
                     <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Short Code</th>
                     <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Original URL</th>
                     <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Clicks</th>
+                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Status</th>
                     <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Created</th>
                     <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {urls.map((url) => (
+                  {urls.map((url) => {
+                    const isExpired = url.expires_at && new Date(url.expires_at) < new Date();
+                    return (
                     <tr key={url.id} className="border-b border-gray-200 hover:bg-gray-50">
                       <td className="px-6 py-4 text-sm font-medium text-blue-600">
                         <button
@@ -190,6 +211,21 @@ const Dashboard: React.FC = () => {
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-900 truncate max-w-xs">{url.original_url}</td>
                       <td className="px-6 py-4 text-sm text-gray-900">{url.clicks}</td>
+                      <td className="px-6 py-4 text-sm">
+                        {isExpired ? (
+                          <span className="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                            Expired
+                          </span>
+                        ) : url.expires_at ? (
+                          <span className="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                            Expires {new Date(url.expires_at).toLocaleDateString()}
+                          </span>
+                        ) : (
+                          <span className="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                            Active
+                          </span>
+                        )}
+                      </td>
                       <td className="px-6 py-4 text-sm text-gray-900">
                         {new Date(url.created_at).toLocaleDateString()}
                       </td>
@@ -208,7 +244,8 @@ const Dashboard: React.FC = () => {
                         </button>
                       </td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

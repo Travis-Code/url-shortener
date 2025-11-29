@@ -56,7 +56,13 @@ A modern full-stack URL shortening application with real-time analytics, user au
 📊 **Analytics:**
 - Track total clicks per URL
 - View recent clicks with IP, referrer, and timestamp
-- Link expiration support
+- Real-time expiration status badges
+
+⏰ **Link Expiration:**
+- Set optional expiration dates when creating URLs
+- Automatic expiration enforcement on redirect
+- Visual status indicators (Active, Expiring, Expired)
+- Manual cleanup script to purge expired links
 
 🔒 **Security:**
 - Password hashing with bcryptjs
@@ -205,6 +211,13 @@ cd server
 npm run seed
 ```
 This creates a demo user (email pattern `demo+TIMESTAMP@example.com`, password `password123`) and inserts 5 technology URLs with synthetic click analytics.
+
+**Cleanup Expired URLs**
+```bash
+cd server
+npm run cleanup
+```
+Manually removes all expired URLs from the database. In production, schedule this with cron (e.g., daily at 2am).
 
 **Run Backend Tests**
 ```bash
