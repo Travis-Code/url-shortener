@@ -57,12 +57,20 @@ A modern full-stack URL shortening application with real-time analytics, user au
 - Track total clicks per URL
 - View recent clicks with IP, referrer, and timestamp
 - Real-time expiration status badges
+- **Geographic tracking** - Country and city from IP address
+- **Top locations chart** - Visual breakdown of clicks by location
 
 ⏰ **Link Expiration:**
 - Set optional expiration dates when creating URLs
 - Automatic expiration enforcement on redirect
 - Visual status indicators (Active, Expiring, Expired)
 - Manual cleanup script to purge expired links
+
+🌍 **Geolocation:**
+- Automatic IP-to-location lookup using geoip-lite
+- Track clicks by country and city
+- Top 10 locations with visual progress bars
+- Location displayed in recent clicks table
 
 🔒 **Security:**
 - Password hashing with bcryptjs
@@ -78,6 +86,7 @@ A modern full-stack URL shortening application with real-time analytics, user au
 - PostgreSQL
 - JWT Authentication
 - bcryptjs for password hashing
+- geoip-lite for geolocation
 
 **Frontend:**
 - React 18 with TypeScript

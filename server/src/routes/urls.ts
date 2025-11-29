@@ -63,9 +63,20 @@ router.get('/:id/analytics', authMiddleware, async (req: AuthRequest, res: Respo
       return res.status(404).json({ error: 'URL not found' });
     }
 
-    // Get click analytics
+    // Get click analytics with geolocation
     const clicksResult = await pool.query(
-      'SELECT clicked_at, user_agent, ip_address, referer FROM clicks WHERE url_id = $1 ORDER BY clicked_at DESC LIMIT 100',
+      'SELECT clicked_at, user_agent, ip_address, referer, country, city FROM clicks WHERE url_id = $1 ORDER BY clicked_at DESC LIMIT 100',
+      [id]
+    );
+
+    // Get geographic breakdown
+    const geoResult = await pool.query(
+      `SELECT country, city, COUNT(*) as count 
+       FROM clicks 
+       WHERE url_id = $1 AND country IS NOT NULL 
+       GROUP BY country, city 
+       ORDER BY count DESC 
+       LIMIT 10`,
       [id]
     );
 
@@ -73,6 +84,7 @@ router.get('/:id/analytics', authMiddleware, async (req: AuthRequest, res: Respo
       shortCode: urlResult.rows[0].short_code,
       totalClicks: urlResult.rows[0].clicks,
       recentClicks: clicksResult.rows,
+      topLocations: geoResult.rows,
     });
   } catch (err) {
     console.error('Error fetching analytics:', err);
