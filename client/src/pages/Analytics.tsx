@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { urlApi } from '../api/client';
-import { useAuth } from '../utils/authContext';
 
 interface Click {
   clicked_at: string;
   user_agent: string;
   ip_address: string;
   referer: string;
+  country: string | null;
+  city: string | null;
+}
+
+interface Location {
+  country: string;
+  city: string;
+  count: number;
 }
 
 const Analytics: React.FC = () => {
@@ -15,9 +22,9 @@ const Analytics: React.FC = () => {
   const [shortCode, setShortCode] = useState('');
   const [totalClicks, setTotalClicks] = useState(0);
   const [recentClicks, setRecentClicks] = useState<Click[]>([]);
+  const [topLocations, setTopLocations] = useState<Location[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const { user } = useAuth();
 
   useEffect(() => {
     fetchAnalytics();
@@ -30,6 +37,7 @@ const Analytics: React.FC = () => {
       setShortCode(response.data.shortCode);
       setTotalClicks(response.data.totalClicks);
       setRecentClicks(response.data.recentClicks);
+      setTopLocations(response.data.topLocations || []);
     } catch (err: any) {
       setError(err.response?.data?.error || 'Failed to fetch analytics');
     } finally {
@@ -49,6 +57,34 @@ const Analytics: React.FC = () => {
         <div className="text-gray-600">Total Clicks</div>
       </div>
 
+      {topLocations.length > 0 && (
+        <div className="bg-white rounded-lg shadow p-6 mb-6">
+          <h2 className="text-xl font-semibold mb-4">🌍 Top Locations</h2>
+          <div className="space-y-3">
+            {topLocations.map((location, index) => (
+              <div key={index} className="flex justify-between items-center">
+                <div className="flex items-center">
+                  <span className="font-medium text-gray-900">
+                    {location.city ? `${location.city}, ` : ''}{location.country}
+                  </span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-48 bg-gray-200 rounded-full h-2">
+                    <div
+                      className="bg-blue-600 h-2 rounded-full"
+                      style={{ width: `${(location.count / topLocations[0].count) * 100}%` }}
+                    />
+                  </div>
+                  <span className="text-sm font-semibold text-gray-700 w-12 text-right">
+                    {location.count} clicks
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="bg-white rounded-lg shadow">
         <div className="px-6 py-4 border-b border-gray-200">
           <h2 className="text-xl font-semibold">Recent Clicks</h2>
@@ -58,6 +94,7 @@ const Analytics: React.FC = () => {
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
                 <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Time</th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Location</th>
                 <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">IP Address</th>
                 <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Referrer</th>
               </tr>
@@ -74,6 +111,17 @@ const Analytics: React.FC = () => {
                   <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
                     <td className="px-6 py-4 text-sm text-gray-900">
                       {new Date(click.clicked_at).toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-900">
+                      {click.city && click.country ? (
+                        <span className="flex items-center">
+                          🌍 {click.city}, {click.country}
+                        </span>
+                      ) : click.country ? (
+                        <span className="flex items-center">🌍 {click.country}</span>
+                      ) : (
+                        <span className="text-gray-400">Unknown</span>
+                      )}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-900">{click.ip_address || 'N/A'}</td>
                     <td className="px-6 py-4 text-sm text-gray-900">{click.referer || 'Direct'}</td>
