@@ -109,6 +109,9 @@ npm run dev
 
 The API will be available at `http://localhost:5000`
 
+<!-- GitHub Actions status badge -->
+![CI](https://github.com/Travis-Code/url-shortener/actions/workflows/ci.yml/badge.svg)
+
 ### Frontend Setup
 
 1. Navigate to the client directory:
@@ -127,6 +130,20 @@ npm run dev
 ```
 
 The application will be available at `http://localhost:3000`
+
+## Deployment Notes
+
+This repository includes a GitHub Actions workflow (`.github/workflows/ci.yml`) that builds and tests both the backend and frontend. It will also attempt to deploy to Vercel or Railway if the corresponding secrets are configured in this repository settings:
+
+- `VERCEL_TOKEN` (for automatic Vercel deploys using `vercel` CLI)
+- `RAILWAY_TOKEN` (for Railway CLI deployments)
+
+To enable automatic deployments using GitHub Actions:
+
+1. Go to the repository Settings → Secrets and variables → Actions → New repository secret.
+2. Add `VERCEL_TOKEN` (if using Vercel) or `RAILWAY_TOKEN` and any project-specific variables.
+
+Alternatively, connect this repository to Vercel via the Vercel dashboard for automatic previews on PRs and production deploys on `main`.
 
 ## API Endpoints
 
