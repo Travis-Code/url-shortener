@@ -2,6 +2,8 @@
 
 A modern full-stack URL shortening application with real-time analytics, user authentication, and a responsive UI.
 
+**Status:** ✅ Fully working locally with PostgreSQL database
+
 ## Features
 
 ✨ **Core Features:**
@@ -75,7 +77,16 @@ FullStackProject/
 ### Prerequisites
 
 - Node.js 16+ and npm
-- PostgreSQL 12+
+- PostgreSQL 12+ (running locally)
+
+### Database Setup
+
+Create the PostgreSQL database:
+```bash
+createdb url_shortener
+```
+
+The database tables will be automatically created when the backend starts.
 
 ### Backend Setup
 
@@ -96,10 +107,12 @@ cp .env.example .env
 
 4. Update `.env` with your database credentials:
 ```
-PORT=5000
-DATABASE_URL=postgresql://user:password@localhost:5432/url_shortener
-JWT_SECRET=your_secure_secret_key_here
+PORT=5001
+DATABASE_URL=postgresql://yourusername@localhost:5432/url_shortener
+JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
 NODE_ENV=development
+FRONTEND_URL=http://localhost:3000
+BASE_URL=http://localhost:5001
 ```
 
 5. Start the development server:
@@ -107,7 +120,7 @@ NODE_ENV=development
 npm run dev
 ```
 
-The API will be available at `http://localhost:5000`
+The API will be available at `http://localhost:5001`
 
 <!-- GitHub Actions status badge -->
 ![CI](https://github.com/Travis-Code/url-shortener/actions/workflows/ci.yml/badge.svg)
@@ -131,19 +144,26 @@ npm run dev
 
 The application will be available at `http://localhost:3000`
 
+## Local Development
+
+**Currently running locally:**
+- Backend: `http://localhost:5001`
+- Frontend: `http://localhost:3000`
+- Database: PostgreSQL (local `url_shortener` database)
+
+To start the application:
+1. Start backend: `cd server && npm run dev`
+2. Start frontend: `cd client && npm run dev`
+3. Visit `http://localhost:3000` in your browser
+
 ## Deployment Notes
 
-This repository includes a GitHub Actions workflow (`.github/workflows/ci.yml`) that builds and tests both the backend and frontend. It will also attempt to deploy to Vercel or Railway if the corresponding secrets are configured in this repository settings:
+This repository includes a GitHub Actions workflow (`.github/workflows/ci.yml`) that builds and tests both the backend and frontend.
 
-- `VERCEL_TOKEN` (for automatic Vercel deploys using `vercel` CLI)
-- `RAILWAY_TOKEN` (for Railway CLI deployments)
-
-To enable automatic deployments using GitHub Actions:
-
-1. Go to the repository Settings → Secrets and variables → Actions → New repository secret.
-2. Add `VERCEL_TOKEN` (if using Vercel) or `RAILWAY_TOKEN` and any project-specific variables.
-
-Alternatively, connect this repository to Vercel via the Vercel dashboard for automatic previews on PRs and production deploys on `main`.
+For deployment to production platforms like Vercel, Railway, Render, or Heroku, you'll need to:
+1. Configure environment variables on your hosting platform
+2. Set up PostgreSQL database
+3. Update `BASE_URL` and `FRONTEND_URL` to production URLs
 
 ## API Endpoints
 
@@ -170,7 +190,7 @@ Alternatively, connect this repository to Vercel via the Vercel dashboard for au
 
 **Request:**
 ```bash
-curl -X POST http://localhost:5000/api/urls/create \
+curl -X POST http://localhost:5001/api/urls/create \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -185,7 +205,7 @@ curl -X POST http://localhost:5000/api/urls/create \
 {
   "id": 1,
   "shortCode": "abc1234",
-  "shortUrl": "http://localhost:5000/abc1234",
+  "shortUrl": "http://localhost:5001/abc1234",
   "originalUrl": "https://example.com/very/long/url",
   "createdAt": "2024-01-01T12:00:00Z"
 }
