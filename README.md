@@ -1,8 +1,47 @@
 # URL Shortener - Full Stack Project
 
+![CI](https://github.com/Travis-Code/url-shortener/actions/workflows/ci.yml/badge.svg)
+
 A modern full-stack URL shortening application with real-time analytics, user authentication, and a responsive UI.
 
 **Status:** ✅ Fully working locally with PostgreSQL database
+
+## How It Works
+
+**URL Shortener** transforms long URLs into short, shareable links while tracking engagement analytics.
+
+### User Flow
+
+1. **Sign Up / Log In**
+   - Create an account or log in with existing credentials
+   - Authentication uses JWT tokens for secure sessions
+
+2. **Create Short URLs**
+   - Paste any long URL into the dashboard
+   - Add optional title and description for organization
+   - Get an instant short link (e.g., `http://localhost:5001/abc1234`)
+
+3. **Share & Track**
+   - Share your short link anywhere (email, social media, documents)
+   - Every click is automatically tracked with metadata (IP, referrer, user agent, timestamp)
+   - View real-time click counts on your dashboard
+
+4. **View Analytics**
+   - See total clicks per URL
+   - Access detailed click history with IP addresses, timestamps, and referrer information
+   - Monitor which links are performing best
+
+5. **Manage Links**
+   - View all your shortened URLs in one place
+   - Delete links you no longer need
+   - Links cascade-delete their click analytics automatically
+
+### Example Use Cases
+
+- **Marketing Campaigns**: Track which channels drive the most traffic
+- **Social Media**: Share clean, professional links instead of long URLs
+- **Email Newsletters**: Monitor engagement and click-through rates
+- **Personal Portfolio**: Organize and track your shared content
 
 ## Features
 
@@ -155,6 +194,40 @@ To start the application:
 1. Start backend: `cd server && npm run dev`
 2. Start frontend: `cd client && npm run dev`
 3. Visit `http://localhost:3000` in your browser
+
+## Seed & Test Data
+
+You can populate demo data and run the integration tests to showcase functionality:
+
+**Seed Demo Content**
+```bash
+cd server
+npm run seed
+```
+This creates a demo user (email pattern `demo+TIMESTAMP@example.com`, password `password123`) and inserts 5 technology URLs with synthetic click analytics.
+
+**Run Backend Tests**
+```bash
+cd server
+npm test
+```
+Tests cover signup, login, URL creation, redirect, and analytics. They use the exported Express `app` directly for fast execution.
+
+**One-Liner (from repo root)**
+```bash
+(cd server && npm run seed && npm test)
+```
+
+**Check Last Seeded User**
+```bash
+psql "$DATABASE_URL" -c "SELECT email, created_at FROM users ORDER BY id DESC LIMIT 1;"
+```
+
+**Smoke Test (legacy)**
+```bash
+cd server
+npm run smoke
+```
 
 ## Deployment Notes
 
