@@ -29,7 +29,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // Initialize database with retries
-const initializeDatabaseWithRetry = async (maxRetries = 15, delayMs = 5000) => {
+const initializeDatabaseWithRetry = async (maxRetries = 30, delayMs = 2000) => {
   console.log('Starting database initialization with retries...');
   console.log('DATABASE_URL:', process.env.DATABASE_URL ? '***set***' : 'NOT SET');
   

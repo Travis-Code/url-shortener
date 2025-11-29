@@ -1,20 +1,27 @@
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
 
-dotenv.config();
+// Only load from .env in development
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config();
+}
 
 const connectionString = process.env.DATABASE_URL;
 
+console.log('[DB Pool] Environment:', process.env.NODE_ENV || 'development');
+console.log('[DB Pool] DATABASE_URL present:', !!connectionString);
 if (!connectionString) {
-  console.warn('WARNING: DATABASE_URL not set. Database connection will fail.');
-  console.warn('Make sure Railway PostgreSQL service is linked and DATABASE_URL environment variable is injected.');
+  console.error('ERROR: DATABASE_URL environment variable is not set!');
+  console.error('In production, Railway should inject this automatically.');
+  console.error('In development, ensure .env file exists with DATABASE_URL set.');
 }
 
 const pool = new Pool({
   connectionString,
   max: 5,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 5000,
+  connectionTimeoutMillis: 10000, // Increased from 5000 to handle startup delays
+  statement_timeout: 30000,
 });
 
 pool.on('error', (err) => {
