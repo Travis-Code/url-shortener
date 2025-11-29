@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { initializeDatabase } from './db/init';
 import authRoutes from './routes/auth';
 import urlRoutes from './routes/urls';
+import diagnosticsRoutes from './routes/diagnostics';
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use(
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/urls', urlRoutes);
+app.use('/api/diag', diagnosticsRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
