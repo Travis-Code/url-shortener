@@ -61,8 +61,13 @@ if (connectionString) {
     parsedDb = uri.pathname.replace(/^\//, '');
     parsedUser = decodeURIComponent(uri.username);
     parsedPassword = decodeURIComponent(uri.password);
+    // Railway TCP proxy handles TLS termination - use plain connection
     if (/proxy\.rlwy\.net$/i.test(parsedHost)) {
-      useSsl = true;
+      useSsl = false; // Proxy expects plain Postgres protocol
+      console.log('[DB Pool] Using Railway proxy - SSL disabled (proxy handles TLS)');
+    } else {
+      // Internal network might need SSL
+      useSsl = false; // Try without SSL first
     }
   } catch (e) {
     console.warn('[DB Pool] Could not parse URL, falling back to connectionString only:', e);
