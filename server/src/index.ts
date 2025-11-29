@@ -29,33 +29,39 @@ app.get('/api/health', (req, res) => {
 });
 
 // Initialize database with retries
-const initializeDatabaseWithRetry = async (maxRetries = 10, delayMs = 3000) => {
+const initializeDatabaseWithRetry = async (maxRetries = 15, delayMs = 5000) => {
+  console.log('Starting database initialization with retries...');
+  console.log('DATABASE_URL:', process.env.DATABASE_URL ? '***set***' : 'NOT SET');
+  
   for (let i = 0; i < maxRetries; i++) {
     try {
+      console.log(`Attempt ${i + 1}/${maxRetries} to initialize database...`);
       await initializeDatabase();
-      console.log('Database initialized successfully');
+      console.log('✓ Database initialized successfully');
       return;
     } catch (err) {
-      console.warn(`Database initialization attempt ${i + 1}/${maxRetries} failed:`, err instanceof Error ? err.message : err);
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      console.warn(`✗ Attempt ${i + 1}/${maxRetries} failed: ${errorMsg}`);
       if (i < maxRetries - 1) {
+        console.log(`  Retrying in ${delayMs}ms...`);
         await new Promise(resolve => setTimeout(resolve, delayMs));
       }
     }
   }
-  console.error('Failed to initialize database after all retries');
+  console.error('⚠ Failed to initialize database after all retries. API will operate without database.');
 };
 
 // Start server
 const startServer = async () => {
   try {
     // Start the server immediately
-    app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
+    const server = app.listen(PORT, () => {
+      console.log(`✓ Server running on http://localhost:${PORT}`);
     });
     
     // Initialize database in the background with retries
     initializeDatabaseWithRetry().catch(err => {
-      console.error('Database initialization failed permanently:', err);
+      console.error('Database initialization error:', err);
     });
   } catch (err) {
     console.error('Failed to start server:', err);
