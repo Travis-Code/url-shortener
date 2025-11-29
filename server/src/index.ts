@@ -55,20 +55,20 @@ const initializeDatabaseWithRetry = async (maxRetries = 30, delayMs = 2000) => {
 
 // Start server
 const startServer = async () => {
-  try {
-    // Start the server immediately
-    const server = app.listen(PORT, () => {
-      console.log(`✓ Server running on http://localhost:${PORT}`);
-    });
-    
-    // Initialize database in the background with retries
-    initializeDatabaseWithRetry().catch(err => {
-      console.error('Database initialization error:', err);
-    });
-  } catch (err) {
-    console.error('Failed to start server:', err);
-    process.exit(1);
-  }
+  // Start the HTTP server first (don't block on database)
+  const server = app.listen(PORT, () => {
+    console.log(`✓ Server running on http://localhost:${PORT}`);
+    console.log(`Health check: http://localhost:${PORT}/api/health`);
+  });
+  
+  // Initialize database in background (non-blocking)
+  initializeDatabaseWithRetry().catch(err => {
+    console.error('⚠ Database initialization failed, but server is still running');
+    console.error('Error:', err.message);
+  });
 };
 
-startServer();
+startServer().catch(err => {
+  console.error('Fatal: Could not start server:', err);
+  process.exit(1);
+});
