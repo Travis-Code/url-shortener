@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import geoip from 'geoip-lite';
+import { UAParser } from 'ua-parser-js';
 import pool from './db/pool';
 import authRoutes from './routes/auth';
 import urlRoutes from './routes/urls';
@@ -62,9 +63,25 @@ app.get('/:shortCode', async (req, res) => {
     const country = geo?.country || null;
     const city = geo?.city || null;
 
+    const uaString = req.get('user-agent') || '';
+    const parser = new UAParser(uaString);
+    const browserName = parser.getBrowser().name || 'Unknown';
+    const osName = parser.getOS().name || 'Unknown';
+    const deviceType = parser.getDevice().type || 'Desktop';
+
     await pool.query(
-      'INSERT INTO clicks (url_id, user_agent, ip_address, referer, country, city) VALUES ($1, $2, $3, $4, $5, $6)',
-      [url.id, req.get('user-agent'), ipAddress, req.get('referer'), country, city]
+      'INSERT INTO clicks (url_id, user_agent, ip_address, referer, country, city, browser, os, device_type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
+      [
+        url.id,
+        uaString,
+        ipAddress,
+        req.get('referer'),
+        country,
+        city,
+        browserName,
+        osName,
+        deviceType,
+      ]
     );
 
     await pool.query('UPDATE urls SET clicks = clicks + 1 WHERE id = $1', [url.id]);

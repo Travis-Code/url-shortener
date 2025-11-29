@@ -63,20 +63,52 @@ router.get('/:id/analytics', authMiddleware, async (req: AuthRequest, res: Respo
       return res.status(404).json({ error: 'URL not found' });
     }
 
-    // Get click analytics with geolocation
+    // Get recent clicks including parsed UA fields
     const clicksResult = await pool.query(
-      'SELECT clicked_at, user_agent, ip_address, referer, country, city FROM clicks WHERE url_id = $1 ORDER BY clicked_at DESC LIMIT 100',
+      'SELECT clicked_at, user_agent, ip_address, referer, country, city, browser, os, device_type FROM clicks WHERE url_id = $1 ORDER BY clicked_at DESC LIMIT 100',
       [id]
     );
 
     // Get geographic breakdown
     const geoResult = await pool.query(
-      `SELECT country, city, COUNT(*) as count 
-       FROM clicks 
-       WHERE url_id = $1 AND country IS NOT NULL 
-       GROUP BY country, city 
-       ORDER BY count DESC 
+      `SELECT country, city, COUNT(*) as count
+       FROM clicks
+       WHERE url_id = $1 AND country IS NOT NULL
+       GROUP BY country, city
+       ORDER BY count DESC
        LIMIT 10`,
+      [id]
+    );
+
+    // Browser breakdown
+    const browserResult = await pool.query(
+      `SELECT COALESCE(browser, 'Unknown') as browser, COUNT(*) as count
+       FROM clicks
+       WHERE url_id = $1
+       GROUP BY browser
+       ORDER BY count DESC
+       LIMIT 10`,
+      [id]
+    );
+
+    // OS breakdown
+    const osResult = await pool.query(
+      `SELECT COALESCE(os, 'Unknown') as os, COUNT(*) as count
+       FROM clicks
+       WHERE url_id = $1
+       GROUP BY os
+       ORDER BY count DESC
+       LIMIT 10`,
+      [id]
+    );
+
+    // Device type breakdown
+    const deviceResult = await pool.query(
+      `SELECT COALESCE(device_type, 'Unknown') as device_type, COUNT(*) as count
+       FROM clicks
+       WHERE url_id = $1
+       GROUP BY device_type
+       ORDER BY count DESC`,
       [id]
     );
 
@@ -85,6 +117,9 @@ router.get('/:id/analytics', authMiddleware, async (req: AuthRequest, res: Respo
       totalClicks: urlResult.rows[0].clicks,
       recentClicks: clicksResult.rows,
       topLocations: geoResult.rows,
+      topBrowsers: browserResult.rows,
+      topOS: osResult.rows,
+      topDevices: deviceResult.rows,
     });
   } catch (err) {
     console.error('Error fetching analytics:', err);

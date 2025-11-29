@@ -9,6 +9,9 @@ interface Click {
   referer: string;
   country: string | null;
   city: string | null;
+  browser?: string | null;
+  os?: string | null;
+  device_type?: string | null;
 }
 
 interface Location {
@@ -17,12 +20,22 @@ interface Location {
   count: number;
 }
 
+interface BreakdownItem {
+  count: number;
+  browser?: string;
+  os?: string;
+  device_type?: string;
+}
+
 const Analytics: React.FC = () => {
   const { id } = useParams();
   const [shortCode, setShortCode] = useState('');
   const [totalClicks, setTotalClicks] = useState(0);
   const [recentClicks, setRecentClicks] = useState<Click[]>([]);
   const [topLocations, setTopLocations] = useState<Location[]>([]);
+  const [topBrowsers, setTopBrowsers] = useState<{ browser: string; count: number }[]>([]);
+  const [topOS, setTopOS] = useState<{ os: string; count: number }[]>([]);
+  const [topDevices, setTopDevices] = useState<{ device_type: string; count: number }[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -38,6 +51,9 @@ const Analytics: React.FC = () => {
       setTotalClicks(response.data.totalClicks);
       setRecentClicks(response.data.recentClicks);
       setTopLocations(response.data.topLocations || []);
+      setTopBrowsers(response.data.topBrowsers || []);
+      setTopOS(response.data.topOS || []);
+      setTopDevices(response.data.topDevices || []);
     } catch (err: any) {
       setError(err.response?.data?.error || 'Failed to fetch analytics');
     } finally {
@@ -76,12 +92,82 @@ const Analytics: React.FC = () => {
                     />
                   </div>
                   <span className="text-sm font-semibold text-gray-700 w-12 text-right">
-                    {location.count} clicks
+                    {location.count}
                   </span>
                 </div>
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {(topBrowsers.length > 0 || topOS.length > 0 || topDevices.length > 0) && (
+        <div className="grid md:grid-cols-3 gap-6 mb-6">
+          {topBrowsers.length > 0 && (
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-lg font-semibold mb-4">🧭 Top Browsers</h2>
+              <div className="space-y-3">
+                {topBrowsers.map((b, i) => (
+                  <div key={i} className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-gray-900">{b.browser || 'Unknown'}</span>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-32 bg-gray-200 rounded-full h-2">
+                        <div
+                          className="bg-indigo-600 h-2 rounded-full"
+                          style={{ width: `${(b.count / topBrowsers[0].count) * 100}%` }}
+                        />
+                      </div>
+                      <span className="text-xs font-semibold text-gray-700 w-8 text-right">{b.count}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {topOS.length > 0 && (
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-lg font-semibold mb-4">💻 Top Operating Systems</h2>
+              <div className="space-y-3">
+                {topOS.map((o, i) => (
+                  <div key={i} className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-gray-900">{o.os || 'Unknown'}</span>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-32 bg-gray-200 rounded-full h-2">
+                        <div
+                          className="bg-green-600 h-2 rounded-full"
+                          style={{ width: `${(o.count / topOS[0].count) * 100}%` }}
+                        />
+                      </div>
+                      <span className="text-xs font-semibold text-gray-700 w-8 text-right">{o.count}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {topDevices.length > 0 && (
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-lg font-semibold mb-4">📱 Top Device Types</h2>
+              <div className="space-y-3">
+                {topDevices.map((d, i) => (
+                  <div key={i} className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-gray-900">{d.device_type || 'Desktop'}</span>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-32 bg-gray-200 rounded-full h-2">
+                        <div
+                          className="bg-pink-600 h-2 rounded-full"
+                          style={{ width: `${(d.count / topDevices[0].count) * 100}%` }}
+                        />
+                      </div>
+                      <span className="text-xs font-semibold text-gray-700 w-8 text-right">{d.count}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
