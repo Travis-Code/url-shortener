@@ -1,21 +1,36 @@
-<!-- PR template -->
+# Pull Request
 
 ## Summary
-Describe the change and why it is needed.
-
-## Type of change
-- [ ] Bugfix
-- [ ] Feature
-- [ ] Documentation
-- [ ] Other
+- What does this PR do and why?
 
 ## Changes
-- What files were changed
-- Any breaking changes
+- List main changes in bullets
+- Keep scope focused and atomic
+
+## How to Test
+```bash
+# Backend
+cd server && npm install && npm test
+npm run dev
+
+# Frontend
+cd client && npm install && npm test
+npm run dev
+```
+- Manual steps to validate features
+
+## Screenshots / Recordings (if UI)
+- Add images or GIFs of the change
 
 ## Checklist
-- [ ] I have tested these changes locally
-- [ ] I updated relevant documentation (README, etc.)
-- [ ] I added tests if applicable
+- [ ] Title is clear and scoped
+- [ ] README updated if needed
+- [ ] `.env.example` updated if needed
+- [ ] Tests added/updated
+- [ ] CI checks pass (build, lint, tests)
+- [ ] No unrelated changes (formatting/noise)
+- [ ] Accessible and responsive UI (if applicable)
 
-@reviewers: please check the checklist and approve when ready.
+## Linked Issues / Follow-ups
+- Closes #123
+- Follow-up tasks or future scope
