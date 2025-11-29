@@ -52,27 +52,3 @@ jobs:
         run: |
           if [ -d server ] && [ -f server/package.json ]; then cd server && npm test || true; fi
           if [ -d client ] && [ -f client/package.json ]; then cd client && npm test || true; fi
-
-  deploy:
-    name: Deploy (optional)
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Deploy to Vercel (if VERCEL_TOKEN set)
-        if: secrets.VERCEL_TOKEN
-        run: |
-          echo "Deploying to Vercel..."
-          npx vercel --prod --confirm
-
-      - name: Deploy to Railway (if RAILWAY_TOKEN set)
-        if: secrets.RAILWAY_TOKEN
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: |
-          echo "Deploying to Railway..."
-          npm i -g railway
-          railway up --production || true
