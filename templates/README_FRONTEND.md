@@ -2,6 +2,8 @@
 
 Brief description of the UI, audience, and core value.
 
+![CI](https://github.com/<owner>/<repo>/actions/workflows/ci.yml/badge.svg)
+
 ## Status
 - Live App: `https://your-frontend-url`
 - CI: badge here
