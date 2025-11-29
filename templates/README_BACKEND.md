@@ -2,6 +2,8 @@
 
 Brief description of the API purpose and main responsibilities.
 
+![CI](https://github.com/<owner>/<repo>/actions/workflows/ci.yml/badge.svg)
+
 ## Status
 - Live API: `https://api.your-domain`
 - CI: badge here
