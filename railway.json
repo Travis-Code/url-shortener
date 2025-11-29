@@ -4,6 +4,6 @@
     "builder": "nixpacks"
   },
   "deploy": {
-    "startCommand": "cd server && node dist/index.js"
+    "startCommand": "node dist/index.js"
   }
 }
