@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import pool from '../db/pool';
 import { initializeDatabase } from '../db/init';
 import { generateShortCode, isValidUrl } from '../utils/helpers';
+import { UAParser } from 'ua-parser-js';
 
 interface CreatedUrlSummary {
   id: number;
@@ -74,6 +75,13 @@ async function seed() {
     for (let i = 0; i < clicksToInsert; i++) {
       const sample = sampleIPs[Math.floor(Math.random() * sampleIPs.length)];
       const ua = sampleUserAgents[Math.floor(Math.random() * sampleUserAgents.length)];
+      
+      // Parse user-agent to extract browser, OS, and device type
+      const parser = new UAParser(ua);
+      const browserName = parser.getBrowser().name || 'Unknown';
+      const osName = parser.getOS().name || 'Unknown';
+      const deviceType = parser.getDevice().type || 'desktop';
+      
       await pool.query(
         'INSERT INTO clicks (url_id, user_agent, ip_address, referer, country, city, browser, os, device_type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
         [
@@ -83,9 +91,9 @@ async function seed() {
           'https://referrer.example',
           sample.country,
           sample.city,
-          null, // browser will be backfilled by live traffic; synthetic left null intentionally
-          null, // os
-          null  // device_type
+          browserName,
+          osName,
+          deviceType
         ]
       );
     }
