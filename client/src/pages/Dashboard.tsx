@@ -161,7 +161,7 @@ const Dashboard: React.FC = () => {
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 value={expiresAt}
                 onChange={(e) => setExpiresAt(e.target.value)}
-                min={new Date().toISOString().slice(0, 16)}
+                min={new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)}
               />
               <p className="mt-1 text-sm text-gray-500">Link will become inaccessible after this date</p>
             </div>
@@ -203,7 +203,7 @@ const Dashboard: React.FC = () => {
                     <tr key={url.id} className="border-b border-gray-200 hover:bg-gray-50">
                       <td className="px-6 py-4 text-sm font-medium text-blue-600">
                         <button
-                          onClick={() => copyToClipboard(`${window.location.origin}/${url.short_code}`)}
+                          onClick={() => copyToClipboard(`http://localhost:5001/${url.short_code}`)}
                           className="hover:underline"
                         >
                           {url.short_code}

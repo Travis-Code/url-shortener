@@ -49,16 +49,30 @@ async function seed() {
     );
     const urlId = urlRes.rows[0].id;
 
-    // Insert synthetic clicks
+    // Insert synthetic clicks with diverse geolocations
     const clicksToInsert = Math.floor(Math.random() * 5) + 3; // 3-7 clicks
+    const sampleIPs = [
+      { ip: '8.8.8.8', country: 'US', city: 'Mountain View' },      // Google DNS
+      { ip: '1.1.1.1', country: 'AU', city: 'Sydney' },             // Cloudflare DNS
+      { ip: '208.67.222.222', country: 'US', city: 'San Francisco' }, // OpenDNS
+      { ip: '151.101.1.140', country: 'US', city: 'San Francisco' }, // Fastly CDN
+      { ip: '13.107.42.14', country: 'US', city: 'Boydton' },       // Microsoft
+      { ip: '172.217.14.206', country: 'US', city: 'New York' },    // Google
+      { ip: '185.199.108.153', country: 'US', city: 'San Francisco' }, // GitHub Pages
+      { ip: '104.16.132.229', country: 'US', city: 'San Francisco' }  // Cloudflare
+    ];
+    
     for (let i = 0; i < clicksToInsert; i++) {
+      const sample = sampleIPs[Math.floor(Math.random() * sampleIPs.length)];
       await pool.query(
-        'INSERT INTO clicks (url_id, user_agent, ip_address, referer) VALUES ($1, $2, $3, $4)',
+        'INSERT INTO clicks (url_id, user_agent, ip_address, referer, country, city) VALUES ($1, $2, $3, $4, $5, $6)',
         [
           urlId,
           'SeedBot/1.0 (+https://example.com/bot)',
-          `192.168.0.${Math.floor(Math.random() * 255)}`,
-          'https://referrer.example'
+          sample.ip,
+          'https://referrer.example',
+          sample.country,
+          sample.city
         ]
       );
     }
