@@ -37,7 +37,7 @@ router.post('/create', authMiddleware, async (req: AuthRequest, res: Response) =
 router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
     const result = await pool.query(
-      'SELECT id, short_code, original_url, title, description, clicks, created_at FROM urls WHERE user_id = $1 ORDER BY created_at DESC',
+      'SELECT id, short_code, original_url, title, description, clicks, created_at, expires_at FROM urls WHERE user_id = $1 ORDER BY created_at DESC',
       [req.userId]
     );
 
