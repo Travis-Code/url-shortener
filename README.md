@@ -1,0 +1,246 @@
+# URL Shortener - Full Stack Project
+
+A modern full-stack URL shortening application with real-time analytics, user authentication, and a responsive UI.
+
+## Features
+
+✨ **Core Features:**
+- Create short, shareable URLs
+- Custom titles and descriptions
+- Real-time click tracking and analytics
+- User authentication with JWT
+- Responsive design with Tailwind CSS
+- User dashboard to manage links
+
+📊 **Analytics:**
+- Track total clicks per URL
+- View recent clicks with IP, referrer, and timestamp
+- Link expiration support
+
+🔒 **Security:**
+- Password hashing with bcryptjs
+- JWT-based authentication
+- Protected routes and API endpoints
+- CORS enabled
+
+## Tech Stack
+
+**Backend:**
+- Node.js + Express
+- TypeScript
+- PostgreSQL
+- JWT Authentication
+- bcryptjs for password hashing
+
+**Frontend:**
+- React 18 with TypeScript
+- React Router v6
+- Tailwind CSS
+- Axios for HTTP requests
+- Vite for build tooling
+
+## Project Structure
+
+```
+FullStackProject/
+├── server/                 # Backend API
+│   ├── src/
+│   │   ├── db/            # Database setup and initialization
+│   │   ├── routes/        # API routes
+│   │   ├── middleware/    # Authentication middleware
+│   │   ├── utils/         # Utility functions
+│   │   └── index.ts       # Server entry point
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── .env.example
+│
+├── client/                # Frontend React app
+│   ├── src/
+│   │   ├── api/          # API client
+│   │   ├── pages/        # Page components
+│   │   ├── components/   # Reusable components
+│   │   ├── utils/        # Context and utilities
+│   │   ├── App.tsx
+│   │   └── main.tsx
+│   ├── index.html
+│   ├── vite.config.ts
+│   ├── tailwind.config.js
+│   └── package.json
+│
+└── README.md
+```
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 16+ and npm
+- PostgreSQL 12+
+
+### Backend Setup
+
+1. Navigate to the server directory:
+```bash
+cd server
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Create a `.env` file based on `.env.example`:
+```bash
+cp .env.example .env
+```
+
+4. Update `.env` with your database credentials:
+```
+PORT=5000
+DATABASE_URL=postgresql://user:password@localhost:5432/url_shortener
+JWT_SECRET=your_secure_secret_key_here
+NODE_ENV=development
+```
+
+5. Start the development server:
+```bash
+npm run dev
+```
+
+The API will be available at `http://localhost:5000`
+
+### Frontend Setup
+
+1. Navigate to the client directory:
+```bash
+cd client
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Start the development server:
+```bash
+npm run dev
+```
+
+The application will be available at `http://localhost:3000`
+
+## API Endpoints
+
+### Authentication
+
+- `POST /api/auth/signup` - Create a new account
+- `POST /api/auth/login` - Log in to existing account
+
+### URLs
+
+- `POST /api/urls/create` - Create a short URL (requires auth)
+- `GET /api/urls` - Get user's short URLs (requires auth)
+- `GET /api/urls/:id/analytics` - Get analytics for a URL (requires auth)
+- `DELETE /api/urls/:id` - Delete a URL (requires auth)
+- `GET /:shortCode` - Redirect to original URL
+
+### Health Check
+
+- `GET /api/health` - API health status
+
+## Request/Response Examples
+
+### Create Short URL
+
+**Request:**
+```bash
+curl -X POST http://localhost:5000/api/urls/create \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "originalUrl": "https://example.com/very/long/url",
+    "title": "My Link",
+    "description": "Description of the link"
+  }'
+```
+
+**Response:**
+```json
+{
+  "id": 1,
+  "shortCode": "abc1234",
+  "shortUrl": "http://localhost:5000/abc1234",
+  "originalUrl": "https://example.com/very/long/url",
+  "createdAt": "2024-01-01T12:00:00Z"
+}
+```
+
+## Development
+
+### Running Tests
+
+```bash
+# Backend
+cd server
+npm test
+
+# Frontend
+cd client
+npm test
+```
+
+### Building for Production
+
+```bash
+# Backend
+cd server
+npm run build
+
+# Frontend
+cd client
+npm run build
+```
+
+## Deployment
+
+### Backend Deployment (Railway, Heroku, etc.)
+
+1. Set up environment variables on your hosting platform
+2. Push to git repository
+3. Connect repository to deployment service
+4. Deploy with `npm run build && npm start`
+
+### Frontend Deployment (Vercel, Netlify, etc.)
+
+1. Build the project: `npm run build`
+2. Deploy the `dist` folder to your hosting service
+
+## Next Steps to Enhance
+
+1. **Email Verification** - Verify email on signup
+2. **Password Reset** - Allow users to reset forgotten passwords
+3. **Custom Short Codes** - Let users choose their own short codes
+4. **Link Expiration** - Auto-delete links after expiration date
+5. **Advanced Analytics** - Charts, location tracking, device analytics
+6. **Rate Limiting** - Prevent abuse of URL creation
+7. **Link Sharing** - Generate QR codes, social media share buttons
+8. **Admin Dashboard** - Monitor all users and links
+9. **API Documentation** - Swagger/OpenAPI docs
+10. **Testing** - Unit tests, integration tests, E2E tests
+
+## Contributing
+
+1. Create a feature branch
+2. Make your changes
+3. Submit a pull request
+
+## License
+
+MIT
+
+## Author
+
+Your Name
+
+---
+
+**Ready to deploy?** Check out deployment guides for [Vercel](https://vercel.com), [Railway](https://railway.app), [Netlify](https://netlify.com), and [Heroku](https://heroku.com).
