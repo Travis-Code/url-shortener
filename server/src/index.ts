@@ -28,12 +28,34 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
+// Initialize database with retries
+const initializeDatabaseWithRetry = async (maxRetries = 10, delayMs = 3000) => {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      await initializeDatabase();
+      console.log('Database initialized successfully');
+      return;
+    } catch (err) {
+      console.warn(`Database initialization attempt ${i + 1}/${maxRetries} failed:`, err instanceof Error ? err.message : err);
+      if (i < maxRetries - 1) {
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+      }
+    }
+  }
+  console.error('Failed to initialize database after all retries');
+};
+
 // Start server
 const startServer = async () => {
   try {
-    await initializeDatabase();
+    // Start the server immediately
     app.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);
+    });
+    
+    // Initialize database in the background with retries
+    initializeDatabaseWithRetry().catch(err => {
+      console.error('Database initialization failed permanently:', err);
     });
   } catch (err) {
     console.error('Failed to start server:', err);
