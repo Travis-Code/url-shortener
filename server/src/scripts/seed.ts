@@ -62,17 +62,30 @@ async function seed() {
       { ip: '104.16.132.229', country: 'US', city: 'San Francisco' }  // Cloudflare
     ];
     
+    const sampleUserAgents = [
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 13_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15',
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
+      'Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Mobile Safari/537.36',
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:119.0) Gecko/20100101 Firefox/119.0',
+      'Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1'
+    ];
+
     for (let i = 0; i < clicksToInsert; i++) {
       const sample = sampleIPs[Math.floor(Math.random() * sampleIPs.length)];
+      const ua = sampleUserAgents[Math.floor(Math.random() * sampleUserAgents.length)];
       await pool.query(
-        'INSERT INTO clicks (url_id, user_agent, ip_address, referer, country, city) VALUES ($1, $2, $3, $4, $5, $6)',
+        'INSERT INTO clicks (url_id, user_agent, ip_address, referer, country, city, browser, os, device_type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
         [
           urlId,
-          'SeedBot/1.0 (+https://example.com/bot)',
+          ua,
           sample.ip,
           'https://referrer.example',
           sample.country,
-          sample.city
+          sample.city,
+          null, // browser will be backfilled by live traffic; synthetic left null intentionally
+          null, // os
+          null  // device_type
         ]
       );
     }
