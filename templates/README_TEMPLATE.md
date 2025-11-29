@@ -2,6 +2,8 @@
 
 A one-sentence pitch describing what this project does and why it matters.
 
+![CI](https://github.com/<owner>/<repo>/actions/workflows/ci.yml/badge.svg)
+
 ## Status
 - Live Demo: `https://your-demo-url`
 - CI: badge here
