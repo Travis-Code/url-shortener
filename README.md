@@ -59,6 +59,9 @@ A modern full-stack URL shortening application with real-time analytics, user au
 - Real-time expiration status badges
 - **Geographic tracking** - Country and city from IP address
 - **Top locations chart** - Visual breakdown of clicks by location
+- **Browser analytics** - Track which browsers users are using (Chrome, Safari, Firefox, etc.)
+- **Operating system analytics** - See which OS visitors use (Windows, macOS, iOS, Android, etc.)
+- **Device type analytics** - Monitor mobile, tablet, and desktop usage
 
 ⏰ **Link Expiration:**
 - Set optional expiration dates when creating URLs
@@ -87,6 +90,7 @@ A modern full-stack URL shortening application with real-time analytics, user au
 - JWT Authentication
 - bcryptjs for password hashing
 - geoip-lite for geolocation
+- ua-parser-js for user-agent parsing
 
 **Frontend:**
 - React 18 with TypeScript
