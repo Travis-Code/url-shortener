@@ -4,6 +4,6 @@
     "builder": "nixpacks"
   },
   "deploy": {
-    "startCommand": "node dist/index.js"
+    "startCommand": "NODE_ENV=production node dist/index.js"
   }
 }
