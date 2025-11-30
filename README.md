@@ -52,8 +52,9 @@ A modern full-stack URL shortening application with real-time analytics, user au
 - User authentication with JWT
 - Responsive design with Tailwind CSS
 - User dashboard to manage links
+- **Admin dashboard** - Comprehensive system monitoring and management
 
-📊 **Analytics:**
+📊 **Analytics (User Dashboard):**
 - Track total clicks per URL
 - View recent clicks with IP, referrer, and timestamp
 - Real-time expiration status badges
@@ -62,6 +63,20 @@ A modern full-stack URL shortening application with real-time analytics, user au
 - **Browser analytics** - Track which browsers users are using (Chrome, Safari, Firefox, etc.)
 - **Operating system analytics** - See which OS visitors use (Windows, macOS, iOS, Android, etc.)
 - **Device type analytics** - Monitor mobile, tablet, and desktop usage
+
+👨‍💼 **Admin Dashboard:**
+- **Overview Stats** - Total users, URLs, clicks, and activity metrics
+- **User Management** - View all users with URL count and click stats, ban/unban users
+- **URL Management** - View and delete any URL in the system
+- **Advanced Analytics**:
+  - Filter by user or time range (7/30/90 days, all time)
+  - Summary cards: total clicks, unique URLs, mobile traffic %, unique visitors
+  - **Geographic breakdown**: Top 5 countries with visual progress bars
+  - **Browser distribution**: Top 5 browsers with percentages
+  - **Device breakdown**: Mobile/Desktop/Tablet split
+  - **Top 10 URLs**: Ranked by performance with click counts and share %
+  - **Recent clicks table**: Full tracking data with browser, OS, device, location, IP
+  - Real-time filtering and data visualization
 
 ⏰ **Link Expiration:**
 - Set optional expiration dates when creating URLs
@@ -72,14 +87,22 @@ A modern full-stack URL shortening application with real-time analytics, user au
 🌍 **Geolocation:**
 - Automatic IP-to-location lookup using geoip-lite
 - Track clicks by country and city
-- Top 10 locations with visual progress bars
+- Top 5 countries visualization in admin dashboard
 - Location displayed in recent clicks table
 
 🔒 **Security:**
-- Password hashing with bcryptjs
-- JWT-based authentication
-- Protected routes and API endpoints
-- CORS enabled
+- **Helmet.js** - HTTP security headers
+- **Rate limiting** - Brute force protection (5 attempts per 15 minutes)
+- **XSS protection** - Input sanitization on all user inputs
+- **Strong JWT secrets** - 256-bit cryptographic random strings (no fallbacks)
+- **Input validation** - Email regex and password requirements (min 8 characters)
+- **Password hashing** with bcryptjs
+- **JWT-based authentication**
+- **Protected routes** and API endpoints
+- **Admin middleware** - Role-based access control
+- **CORS enabled** with environment-based origins
+- **Payload size limits** (10MB)
+- Complete security documentation in SECURITY.md
 
 ## Tech Stack
 
@@ -91,6 +114,9 @@ A modern full-stack URL shortening application with real-time analytics, user au
 - bcryptjs for password hashing
 - geoip-lite for geolocation
 - ua-parser-js for user-agent parsing
+- helmet for HTTP security headers
+- express-rate-limit for brute force protection
+- xss for input sanitization
 
 **Frontend:**
 - React 18 with TypeScript
@@ -98,6 +124,7 @@ A modern full-stack URL shortening application with real-time analytics, user au
 - Tailwind CSS
 - Axios for HTTP requests
 - Vite for build tooling
+- Context API for auth state management
 
 ## Project Structure
 
@@ -106,8 +133,10 @@ FullStackProject/
 ├── server/                 # Backend API
 │   ├── src/
 │   │   ├── db/            # Database setup and initialization
-│   │   ├── routes/        # API routes
-│   │   ├── middleware/    # Authentication middleware
+│   │   │   └── migrations/ # Database migrations (admin role, etc.)
+│   │   ├── routes/        # API routes (auth, urls, admin, diagnostics)
+│   │   ├── middleware/    # Auth and admin middleware
+│   │   ├── scripts/       # Seed and cleanup scripts
 │   │   ├── utils/         # Utility functions
 │   │   └── index.ts       # Server entry point
 │   ├── package.json
@@ -116,10 +145,10 @@ FullStackProject/
 │
 ├── client/                # Frontend React app
 │   ├── src/
-│   │   ├── api/          # API client
-│   │   ├── pages/        # Page components
-│   │   ├── components/   # Reusable components
-│   │   ├── utils/        # Context and utilities
+│   │   ├── api/          # API client with admin endpoints
+│   │   ├── pages/        # Page components (Home, Login, Signup, Dashboard, Analytics, Admin)
+│   │   ├── components/   # Reusable components (ProtectedRoute)
+│   │   ├── utils/        # Context and utilities (AuthContext)
 │   │   ├── App.tsx
 │   │   └── main.tsx
 │   ├── index.html
@@ -127,6 +156,7 @@ FullStackProject/
 │   ├── tailwind.config.js
 │   └── package.json
 │
+├── SECURITY.md           # Security documentation
 └── README.md
 ```
 
@@ -279,9 +309,19 @@ For deployment to production platforms like Vercel, Railway, Render, or Heroku, 
 - `DELETE /api/urls/:id` - Delete a URL (requires auth)
 - `GET /:shortCode` - Redirect to original URL
 
+### Admin (requires admin role)
+
+- `GET /api/admin/stats` - System-wide statistics
+- `GET /api/admin/users` - List all users with metrics
+- `GET /api/admin/urls` - List all URLs in system
+- `GET /api/admin/clicks` - All click analytics with filters
+- `DELETE /api/admin/urls/:id` - Delete any URL
+- `POST /api/admin/users/:id/ban` - Ban/unban a user
+
 ### Health Check
 
 - `GET /api/health` - API health status
+- `GET /api/diagnostics` - System diagnostics
 
 ## Request/Response Examples
 
@@ -350,18 +390,43 @@ npm run build
 1. Build the project: `npm run build`
 2. Deploy the `dist` folder to your hosting service
 
+## Admin Access
+
+The system includes a role-based admin dashboard. To create an admin user:
+
+1. Run the admin migration:
+```bash
+cd server
+npx ts-node src/db/migrations/add_admin_role.ts
+```
+
+2. Create an admin account:
+```sql
+psql url_shortener
+UPDATE users SET is_admin = true WHERE email = 'your-email@example.com';
+```
+
+Or use the seeded demo admin:
+- Email: `admin@example.com`
+- Password: `password123`
+
+Admin dashboard available at: `http://localhost:3000/admin`
+
 ## Next Steps to Enhance
 
 1. **Email Verification** - Verify email on signup
 2. **Password Reset** - Allow users to reset forgotten passwords
 3. **Custom Short Codes** - Let users choose their own short codes
-4. **Link Expiration** - Auto-delete links after expiration date
-5. **Advanced Analytics** - Charts, location tracking, device analytics
-6. **Rate Limiting** - Prevent abuse of URL creation
+4. ✅ **Link Expiration** - Auto-delete links after expiration date (DONE)
+5. ✅ **Advanced Analytics** - Charts, location tracking, device analytics (DONE)
+6. ✅ **Rate Limiting** - Prevent abuse of URL creation (DONE)
 7. **Link Sharing** - Generate QR codes, social media share buttons
-8. **Admin Dashboard** - Monitor all users and links
+8. ✅ **Admin Dashboard** - Monitor all users and links (DONE)
 9. **API Documentation** - Swagger/OpenAPI docs
 10. **Testing** - Unit tests, integration tests, E2E tests
+11. **Real-time Dashboard** - WebSocket live updates
+12. **Export Reports** - CSV/PDF analytics exports
+13. **Custom Domains** - Allow users to use their own domains
 
 ## Contributing
 
