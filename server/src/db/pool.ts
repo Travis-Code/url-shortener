@@ -17,7 +17,7 @@ if (!connectionString) {
 // Simple pool configuration
 const pool = new Pool({
   connectionString,
-  max: 5,
+  max: 20, // Increased for production readiness
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 10000,
 });

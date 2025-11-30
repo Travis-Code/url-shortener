@@ -28,6 +28,11 @@ export const initializeDatabase = async () => {
       user_agent TEXT,
       ip_address VARCHAR(45),
       referer TEXT,
+      country VARCHAR(2),
+      city VARCHAR(100),
+      browser VARCHAR(50),
+      os VARCHAR(50),
+      device_type VARCHAR(20),
       clicked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`,
     

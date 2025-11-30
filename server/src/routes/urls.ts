@@ -1,13 +1,23 @@
 import { Router, Response } from 'express';
 import xss from 'xss';
+import rateLimit from 'express-rate-limit';
 import pool from '../db/pool';
 import { generateShortCode, isValidUrl, getClientIp } from '../utils/helpers';
 import { AuthRequest, authMiddleware } from '../middleware/auth';
 
 const router = Router();
 
+// Rate limiting for URL creation (20 per hour per user)
+const createUrlLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 20,
+  message: 'Too many URLs created, please try again later',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // CREATE short URL (authenticated)
-router.post('/create', authMiddleware, async (req: AuthRequest, res: Response) => {
+router.post('/create', authMiddleware, createUrlLimiter, async (req: AuthRequest, res: Response) => {
   try {
     let { originalUrl, title, description, expiresAt } = req.body;
 
@@ -19,6 +29,11 @@ router.post('/create', authMiddleware, async (req: AuthRequest, res: Response) =
     if (title) title = xss(title.trim());
     if (description) description = xss(description.trim());
 
+    // Validate URL length
+    if (originalUrl.length > 2048) {
+      return res.status(400).json({ error: 'URL too long (max 2048 characters)' });
+    }
+
     const shortCode = generateShortCode();
     const result = await pool.query(
       'INSERT INTO urls (user_id, short_code, original_url, title, description, expires_at) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, short_code, created_at',
@@ -28,7 +43,7 @@ router.post('/create', authMiddleware, async (req: AuthRequest, res: Response) =
     res.status(201).json({
       id: result.rows[0].id,
       shortCode: result.rows[0].short_code,
-      shortUrl: `${process.env.BASE_URL || 'http://localhost:5000'}/${result.rows[0].short_code}`,
+      shortUrl: `${process.env.BASE_URL || 'http://localhost:5001'}/${result.rows[0].short_code}`,
       originalUrl,
       createdAt: result.rows[0].created_at,
     });

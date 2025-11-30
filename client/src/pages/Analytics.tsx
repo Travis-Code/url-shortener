@@ -20,13 +20,6 @@ interface Location {
   count: number;
 }
 
-interface BreakdownItem {
-  count: number;
-  browser?: string;
-  os?: string;
-  device_type?: string;
-}
-
 const Analytics: React.FC = () => {
   const { id } = useParams();
   const [shortCode, setShortCode] = useState('');

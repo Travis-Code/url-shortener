@@ -294,6 +294,14 @@ For deployment to production platforms like Vercel, Railway, Render, or Heroku, 
 2. Set up PostgreSQL database
 3. Update `BASE_URL` and `FRONTEND_URL` to production URLs
 
+### Production Environment Variables
+- Server (`server/.env.production.example`): `DATABASE_URL`, `JWT_SECRET`, `CORS_ORIGIN`, `PORT`, `NODE_ENV`
+- Client (`client/.env.production.example`): `VITE_API_URL`
+
+### Quick Deploy Steps
+- Backend (Railway): Import repo, add PostgreSQL plugin, set env vars from `server/.env.production.example`, deploy, then verify `GET /api/health` on the Railway URL.
+- Frontend (Vercel): Import repo, set `VITE_API_URL` to the Railway backend URL, build command `npm run build`, output `dist`, deploy.
+
 ## API Endpoints
 
 ### Authentication

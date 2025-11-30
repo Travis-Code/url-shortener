@@ -1,5 +1,14 @@
 import { initializeDatabase } from './db/init';
 import app from './app';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+// Validate critical environment variables at startup
+if (!process.env.JWT_SECRET) {
+  console.error('FATAL: JWT_SECRET environment variable is required');
+  process.exit(1);
+}
 
 const PORT = process.env.PORT || 5000;
 
