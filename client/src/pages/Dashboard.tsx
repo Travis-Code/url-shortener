@@ -87,6 +87,12 @@ const Dashboard: React.FC = () => {
             <div className="flex items-center space-x-4">
               <span className="text-gray-600">{user?.username}</span>
               <button
+                onClick={() => navigate('/admin')}
+                className="px-4 py-2 mr-3 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+              >
+                Admin Panel
+              </button>
+              <button
                 onClick={() => {
                   logout();
                   navigate('/login');

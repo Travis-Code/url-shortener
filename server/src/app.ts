@@ -1,22 +1,31 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import helmet from 'helmet';
 import geoip from 'geoip-lite';
 import { UAParser } from 'ua-parser-js';
 import pool from './db/pool';
 import authRoutes from './routes/auth';
 import urlRoutes from './routes/urls';
 import diagnosticsRoutes from './routes/diagnostics';
+import adminRoutes from './routes/admin';
 
 dotenv.config();
 
 export const app = express();
 
+// Security middleware
+app.use(helmet({
+  contentSecurityPolicy: false, // Disable CSP for now to allow redirects
+}));
+
 // Middleware
-app.use(express.json());
+app.use(express.json({ limit: '10mb' })); // Limit payload size
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: process.env.NODE_ENV === 'production' 
+      ? process.env.FRONTEND_URL 
+      : ['http://localhost:3000', 'http://localhost:5173'],
     credentials: true,
   })
 );
@@ -25,6 +34,7 @@ app.use(
 app.use('/api/auth', authRoutes);
 app.use('/api/urls', urlRoutes);
 app.use('/api/diag', diagnosticsRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Health check
 app.get('/api/health', (_req, res) => {

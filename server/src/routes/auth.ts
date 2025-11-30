@@ -2,16 +2,47 @@ import { Router, Request, Response } from 'express';
 import pool from '../db/pool';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import xss from 'xss';
+import rateLimit from 'express-rate-limit';
 
 const router = Router();
 
+// Rate limiting for auth endpoints (5 attempts per 15 minutes)
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 requests per windowMs
+  message: 'Too many attempts, please try again later',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // SIGNUP
-router.post('/signup', async (req: Request, res: Response) => {
+router.post('/signup', authLimiter, async (req: Request, res: Response) => {
   try {
-    const { username, email, password } = req.body;
+    let { username, email, password } = req.body;
 
     if (!username || !email || !password) {
       return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // Sanitize inputs
+    username = xss(username.trim());
+    email = xss(email.trim().toLowerCase());
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: 'Invalid email format' });
+    }
+
+    // Validate password strength
+    if (password.length < 8) {
+      return res.status(400).json({ error: 'Password must be at least 8 characters' });
+    }
+
+    if (!process.env.JWT_SECRET) {
+      console.error('FATAL: JWT_SECRET not set');
+      return res.status(500).json({ error: 'Server configuration error' });
     }
 
     // Hash password
@@ -23,7 +54,7 @@ router.post('/signup', async (req: Request, res: Response) => {
     );
 
     const user = result.rows[0];
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || 'secret', {
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
       expiresIn: '7d',
     });
 
@@ -38,12 +69,20 @@ router.post('/signup', async (req: Request, res: Response) => {
 });
 
 // LOGIN
-router.post('/login', async (req: Request, res: Response) => {
+router.post('/login', authLimiter, async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({ error: 'Missing email or password' });
+    }
+
+    // Sanitize email
+    email = xss(email.trim().toLowerCase());
+
+    if (!process.env.JWT_SECRET) {
+      console.error('FATAL: JWT_SECRET not set');
+      return res.status(500).json({ error: 'Server configuration error' });
     }
 
     const result = await pool.query('SELECT id, username, email, password_hash FROM users WHERE email = $1', [
@@ -61,7 +100,7 @@ router.post('/login', async (req: Request, res: Response) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || 'secret', {
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
       expiresIn: '7d',
     });
 
