@@ -10,6 +10,22 @@ jobs:
   build:
     name: build
     runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: url_shortener_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
     strategy:
       matrix:
         node-version: [18]
@@ -48,10 +64,14 @@ jobs:
         run: |
           npm run build
 
-      - name: Run tests (if present)
+      - name: Run integration tests
+        working-directory: ./server
+        env:
+          NODE_ENV: test
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/url_shortener_test
+          JWT_SECRET: test-jwt-secret-key-for-ci
         run: |
-          if [ -d server ] && [ -f server/package.json ]; then cd server && npm test || true; fi
-          if [ -d client ] && [ -f client/package.json ]; then cd client && npm test || true; fi
+          npm test
 
       - name: Run smoke tests
         run: |
