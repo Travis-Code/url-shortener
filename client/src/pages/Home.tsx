@@ -11,7 +11,13 @@ const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <h1 className="text-2xl font-bold text-gray-900">URL Shortener</h1>
-            <div className="space-x-4">
+            <div className="flex items-center space-x-4">
+              <Link
+                to="/about"
+                className="px-4 py-2 text-gray-600 font-medium hover:text-gray-900"
+              >
+                About
+              </Link>
               {user ? (
                 <Link
                   to="/dashboard"
