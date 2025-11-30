@@ -16,10 +16,8 @@ if (!connectionString) {
 
 // Simple pool configuration
 const pool = new Pool({
-  connectionString,
-  max: 20, // Increased for production readiness
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 10000,
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
 });
 
 pool.on('error', (err) => {
