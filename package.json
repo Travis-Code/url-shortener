@@ -4,5 +4,9 @@
   "version": "1.0.0",
   "scripts": {
     "smoke:all": "./scripts/smoke.sh"
-  }
+  },
+  "//": "This is the root package.json, but your backend is in /server.",
+  "//": "Railway needs the backend's package.json for build/deploy.",
+  "//": "Solution: Set the Railway service's Root Directory to /server in the settings.",
+  "//": "No code change needed here unless you want to move backend to root."
 }
