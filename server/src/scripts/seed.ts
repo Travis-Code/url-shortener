@@ -19,8 +19,18 @@ async function seed() {
 
   // Clear existing demo data (optional; scoped by email pattern)
   await pool.query("DELETE FROM users WHERE email LIKE 'demo+%@example.com'");
+  await pool.query("DELETE FROM users WHERE email = 'admin@example.com'");
 
   const hashed = await bcrypt.hash(DEMO_PASSWORD, 10);
+  
+  // Create admin user
+  const adminRes = await pool.query(
+    'INSERT INTO users (username, email, password_hash, is_admin) VALUES ($1, $2, $3, $4) RETURNING id, email',
+    ['admin', 'admin@example.com', hashed, true]
+  );
+  console.log(`✓ Created admin user: admin@example.com`);
+
+  // Create regular demo user
   const demoEmail = `demo+${Date.now()}@example.com`;
   const username = `demo_${Math.floor(Math.random() * 100000)}`;
 

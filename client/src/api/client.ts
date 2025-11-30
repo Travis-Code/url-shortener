@@ -29,4 +29,13 @@ export const urlApi = {
   deleteUrl: (id: number) => api.delete(`/urls/${id}`),
 };
 
+export const adminApi = {
+  getStats: () => api.get('/admin/stats'),
+  getUsers: (page = 1, limit = 20) => api.get(`/admin/users?page=${page}&limit=${limit}`),
+  getUrls: (page = 1, limit = 20) => api.get(`/admin/urls?page=${page}&limit=${limit}`),
+  getClicks: (page = 1, limit = 50) => api.get(`/admin/clicks?page=${page}&limit=${limit}`),
+  deleteUrl: (id: number) => api.delete(`/admin/urls/${id}`),
+  banUser: (id: number, banned: boolean) => api.patch(`/admin/users/${id}/ban`, { banned }),
+};
+
 export default api;

@@ -1,4 +1,5 @@
 import { Router, Response } from 'express';
+import xss from 'xss';
 import pool from '../db/pool';
 import { generateShortCode, isValidUrl, getClientIp } from '../utils/helpers';
 import { AuthRequest, authMiddleware } from '../middleware/auth';
@@ -8,11 +9,15 @@ const router = Router();
 // CREATE short URL (authenticated)
 router.post('/create', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
-    const { originalUrl, title, description, expiresAt } = req.body;
+    let { originalUrl, title, description, expiresAt } = req.body;
 
     if (!originalUrl || !isValidUrl(originalUrl)) {
       return res.status(400).json({ error: 'Invalid URL' });
     }
+
+    // Sanitize user inputs
+    if (title) title = xss(title.trim());
+    if (description) description = xss(description.trim());
 
     const shortCode = generateShortCode();
     const result = await pool.query(
