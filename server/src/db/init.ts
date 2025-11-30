@@ -1,4 +1,5 @@
 import pool from './pool';
+import { increaseShortCodeLength } from './migrations/increase_shortcode_length';
 
 export const initializeDatabase = async () => {
   const queries = [
@@ -13,7 +14,7 @@ export const initializeDatabase = async () => {
     `CREATE TABLE IF NOT EXISTS urls (
       id SERIAL PRIMARY KEY,
       user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-      short_code VARCHAR(10) UNIQUE NOT NULL,
+      short_code VARCHAR(20) UNIQUE NOT NULL,
       original_url TEXT NOT NULL,
       title VARCHAR(255),
       description TEXT,
@@ -45,6 +46,10 @@ export const initializeDatabase = async () => {
     for (const query of queries) {
       await pool.query(query);
     }
+    
+    // Run migration to increase short_code length if needed
+    await increaseShortCodeLength();
+    
     console.log('✓ Database initialized successfully');
   } catch (err) {
     console.error('Error initializing database:', err);

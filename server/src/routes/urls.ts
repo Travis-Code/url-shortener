@@ -20,7 +20,7 @@ const createUrlLimiter = rateLimit({
 // CREATE short URL (authenticated)
 router.post('/create', authMiddleware, createUrlLimiter, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    let { originalUrl, title, description, expiresAt } = req.body;
+    let { originalUrl, customShortCode, title, description, expiresAt } = req.body;
 
     if (!originalUrl || !isValidUrl(originalUrl)) {
       return res.status(400).json({ error: 'Invalid URL' });
@@ -29,13 +29,33 @@ router.post('/create', authMiddleware, createUrlLimiter, async (req: AuthRequest
     // Sanitize user inputs
     if (title) title = xss(title.trim());
     if (description) description = xss(description.trim());
+    if (customShortCode) customShortCode = xss(customShortCode.trim());
 
     // Validate URL length
     if (originalUrl.length > 2048) {
       return res.status(400).json({ error: 'URL too long (max 2048 characters)' });
     }
 
-    const shortCode = generateShortCode();
+    // Validate custom short code if provided
+    if (customShortCode) {
+      // Check format (alphanumeric, hyphens, underscores only)
+      if (!/^[a-zA-Z0-9-_]+$/.test(customShortCode)) {
+        return res.status(400).json({ error: 'Custom short code can only contain letters, numbers, hyphens, and underscores' });
+      }
+
+      // Check length
+      if (customShortCode.length < 3 || customShortCode.length > 20) {
+        return res.status(400).json({ error: 'Custom short code must be between 3 and 20 characters' });
+      }
+
+      // Check if already taken
+      const existing = await pool.query('SELECT id FROM urls WHERE short_code = $1', [customShortCode]);
+      if (existing.rows.length > 0) {
+        return res.status(409).json({ error: 'Short code already taken. Please choose another one.' });
+      }
+    }
+
+    const shortCode = customShortCode || generateShortCode();
     const result = await pool.query(
       'INSERT INTO urls (user_id, short_code, original_url, title, description, expires_at) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, short_code, created_at',
       [req.userId, shortCode, originalUrl, title, description, expiresAt || null]

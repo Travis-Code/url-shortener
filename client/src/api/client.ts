@@ -22,8 +22,8 @@ export const authApi = {
 };
 
 export const urlApi = {
-  createUrl: (originalUrl: string, title?: string, description?: string, expiresAt?: string) =>
-    api.post('/urls/create', { originalUrl, title, description, expiresAt }),
+  createUrl: (originalUrl: string, customShortCode?: string, title?: string, description?: string, expiresAt?: string) =>
+    api.post('/urls/create', { originalUrl, customShortCode, title, description, expiresAt }),
   getUrls: () => api.get('/urls'),
   getAnalytics: (id: number) => api.get(`/urls/${id}/analytics`),
   deleteUrl: (id: number) => api.delete(`/urls/${id}`),

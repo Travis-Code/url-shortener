@@ -11,6 +11,10 @@ let shortCode: string;
 
 beforeAll(async () => {
   await initializeDatabase();
+  // Clean up test data
+  await pool.query('DELETE FROM clicks');
+  await pool.query('DELETE FROM urls');
+  await pool.query('DELETE FROM users');
 });
 
 afterAll(async () => {
@@ -18,56 +22,50 @@ afterAll(async () => {
 });
 
 describe('Auth and URL flow', () => {
-  it('signs up a new user', async () => {
+  it('complete flow: signup, login, create URL, redirect, analytics', async () => {
+    // 1. Sign up a new user
     const email = genEmail();
-    const res = await request(app)
+    const signupRes = await request(app)
       .post('/api/auth/signup')
       .send({ username: 'tester', email, password: 'secret123' });
-    expect(res.status).toBe(201);
-    expect(res.body.token).toBeDefined();
-  });
+    if (signupRes.status !== 201) {
+      console.log('Signup failed:', signupRes.status, signupRes.body);
+    }
+    expect(signupRes.status).toBe(201);
+    expect(signupRes.body.token).toBeDefined();
 
-  it('logs in existing user', async () => {
-    const email = genEmail();
-    // signup first
-    await request(app)
-      .post('/api/auth/signup')
-      .send({ username: 'loginuser', email, password: 'secret123' });
-    // login
-    const res = await request(app)
+    // 2. Login with the created user
+    const loginRes = await request(app)
       .post('/api/auth/login')
       .send({ email, password: 'secret123' });
-    expect(res.status).toBe(200);
-    authToken = res.body.token;
-    expect(authToken).toBeDefined();
-  });
+    expect(loginRes.status).toBe(200);
+    const token = loginRes.body.token;
+    expect(token).toBeDefined();
 
-  it('creates a short URL', async () => {
-    const res = await request(app)
+    // 3. Create a short URL
+    const createRes = await request(app)
       .post('/api/urls/create')
-      .set('Authorization', `Bearer ${authToken}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({ originalUrl: 'https://example.com', title: 'Example' });
-    expect(res.status).toBe(201);
-    expect(res.body.shortCode).toBeDefined();
-    createdUrlId = res.body.id;
-    shortCode = res.body.shortCode;
-  });
+    expect(createRes.status).toBe(201);
+    expect(createRes.body.shortCode).toBeDefined();
+    const urlId = createRes.body.id;
+    const code = createRes.body.shortCode;
 
-  it('redirects via short code and tracks click', async () => {
-    const res = await request(app)
-      .get(`/${shortCode}`)
-      .redirects(0); // do not follow
-    expect(res.status).toBe(302);
-    expect(res.headers.location).toBe('https://example.com');
-  });
+    // 4. Redirect via short code
+    const redirectRes = await request(app)
+      .get(`/${code}`)
+      .redirects(0);
+    expect(redirectRes.status).toBe(302);
+    expect(redirectRes.headers.location).toBe('https://example.com');
 
-  it('returns analytics for created URL', async () => {
-    const res = await request(app)
-      .get(`/api/urls/${createdUrlId}/analytics`)
-      .set('Authorization', `Bearer ${authToken}`);
-    expect(res.status).toBe(200);
-    expect(res.body.shortCode).toBe(shortCode);
-    expect(res.body.totalClicks).toBeGreaterThanOrEqual(1);
-    expect(Array.isArray(res.body.recentClicks)).toBe(true);
+    // 5. Get analytics
+    const analyticsRes = await request(app)
+      .get(`/api/urls/${urlId}/analytics`)
+      .set('Authorization', `Bearer ${token}`);
+    expect(analyticsRes.status).toBe(200);
+    expect(analyticsRes.body.shortCode).toBe(code);
+    expect(analyticsRes.body.totalClicks).toBeGreaterThanOrEqual(1);
+    expect(Array.isArray(analyticsRes.body.recentClicks)).toBe(true);
   });
 });
