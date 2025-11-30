@@ -55,4 +55,13 @@ startServer().catch(err => {
   process.exit(1);
 });
 
+// Global process error hooks
+process.on('unhandledRejection', (reason: any) => {
+  console.error('[process] Unhandled Rejection:', reason?.message || reason);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('[process] Uncaught Exception:', err.message);
+});
+
 export default app;

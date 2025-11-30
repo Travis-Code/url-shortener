@@ -1,9 +1,10 @@
-import { Router, Response } from 'express';
+import { Router, Response, NextFunction } from 'express';
 import xss from 'xss';
 import rateLimit from 'express-rate-limit';
 import pool from '../db/pool';
 import { generateShortCode, isValidUrl, getClientIp } from '../utils/helpers';
 import { AuthRequest, authMiddleware } from '../middleware/auth';
+import { logger } from '../utils/logger';
 
 const router = Router();
 
@@ -17,7 +18,7 @@ const createUrlLimiter = rateLimit({
 });
 
 // CREATE short URL (authenticated)
-router.post('/create', authMiddleware, createUrlLimiter, async (req: AuthRequest, res: Response) => {
+router.post('/create', authMiddleware, createUrlLimiter, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     let { originalUrl, title, description, expiresAt } = req.body;
 
@@ -47,14 +48,16 @@ router.post('/create', authMiddleware, createUrlLimiter, async (req: AuthRequest
       originalUrl,
       createdAt: result.rows[0].created_at,
     });
-  } catch (err) {
-    console.error('Error creating short URL:', err);
-    res.status(500).json({ error: 'Server error' });
+  } catch (err: any) {
+    logger.error('create_url_error', { message: err.message });
+    err.status = 500;
+    err.publicMessage = 'Server error';
+    next(err);
   }
 });
 
 // GET user's URLs (authenticated)
-router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
+router.get('/', authMiddleware, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const result = await pool.query(
       'SELECT id, short_code, original_url, title, description, clicks, created_at, expires_at FROM urls WHERE user_id = $1 ORDER BY created_at DESC',
@@ -62,14 +65,16 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
     );
 
     res.json(result.rows);
-  } catch (err) {
-    console.error('Error fetching URLs:', err);
-    res.status(500).json({ error: 'Server error' });
+  } catch (err: any) {
+    logger.error('list_urls_error', { message: err.message });
+    err.status = 500;
+    err.publicMessage = 'Server error';
+    next(err);
   }
 });
 
 // GET URL analytics (authenticated)
-router.get('/:id/analytics', authMiddleware, async (req: AuthRequest, res: Response) => {
+router.get('/:id/analytics', authMiddleware, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
 
@@ -141,14 +146,16 @@ router.get('/:id/analytics', authMiddleware, async (req: AuthRequest, res: Respo
       topOS: osResult.rows,
       topDevices: deviceResult.rows,
     });
-  } catch (err) {
-    console.error('Error fetching analytics:', err);
-    res.status(500).json({ error: 'Server error' });
+  } catch (err: any) {
+    logger.error('analytics_error', { message: err.message });
+    err.status = 500;
+    err.publicMessage = 'Server error';
+    next(err);
   }
 });
 
 // DELETE URL (authenticated)
-router.delete('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
+router.delete('/:id', authMiddleware, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
 
@@ -162,9 +169,11 @@ router.delete('/:id', authMiddleware, async (req: AuthRequest, res: Response) =>
     }
 
     res.json({ message: 'URL deleted successfully' });
-  } catch (err) {
-    console.error('Error deleting URL:', err);
-    res.status(500).json({ error: 'Server error' });
+  } catch (err: any) {
+    logger.error('delete_url_error', { message: err.message });
+    err.status = 500;
+    err.publicMessage = 'Server error';
+    next(err);
   }
 });
 

@@ -232,6 +232,80 @@ npm run dev
 
 The application will be available at `http://localhost:3000`
 
+## Testing
+
+- Smoke runner: Fast end-to-end sanity check for both server and client.
+
+```zsh
+npm run smoke:all
+```
+
+This executes `server/test/smoke.js` (verifies `/api/health`) and `client/test/smoke.js` (verifies core scaffolding). It fails fast if the app cannot start or respond.
+
+## CI Behavior
+
+- Workflow: `CI` runs on pushes and PRs to `main`.
+- Steps: Checkout → Node setup → install/build server and client → optional tests → smoke runner (`npm run smoke:all`).
+- Gate: The job name is `build`; branch protection should require this check to pass.
+- Artifacts: No deploy in CI; build steps validate TypeScript and bundle correctness.
+
+## Troubleshooting
+
+- Backend not responding:
+   - Ensure `server/.env` has a strong `JWT_SECRET` and correct `DATABASE_URL`.
+   - Check port: `lsof -nP -iTCP:5001 -sTCP:LISTEN` (macOS). Kill stray: `lsof -ti:5001 | xargs kill -9`.
+   - Run health: `curl -s http://localhost:5001/api/health`.
+- Database connection issues:
+   - Create DB: `createdb url_shortener`.
+   - Verify URL: `psql "$DATABASE_URL" -c "\conninfo"`.
+- Frontend build/dev errors:
+   - Clear cache: delete `client/node_modules` and reinstall: `cd client && npm ci`.
+   - Port conflicts: `lsof -ti:3000 | xargs kill -9` then `npm run dev`.
+- TypeScript/Jest complaints in server tests:
+   - Confirm `server/tsconfig.json` includes `types: ["node", "jest"]` and `include: ["src", "test"]`.
+- Smoke runner fails in CI:
+   - Check preceding build logs; server smoke expects `dist` or falls back to ts-node.
+   - Re-run locally: `npm run smoke:all` and inspect console output.
+
+## Common Commands
+
+```zsh
+# Backend
+cd server && npm run dev              # start API in dev
+cd server && npm run build            # compile TypeScript
+cd server && npm start                # run compiled server
+cd server && npm run seed             # seed demo data
+cd server && npm run cleanup          # purge expired URLs
+curl -s http://localhost:5001/api/health  # health check
+
+# Frontend
+cd client && npm run dev              # start Vite dev server
+cd client && npm run build            # build frontend
+cd client && npm run preview          # preview built app
+
+# Ports (macOS)
+lsof -ti:5001 | xargs kill -9 2>/dev/null || echo "Port 5001 free"
+lsof -ti:3000 | xargs kill -9 2>/dev/null || echo "Port 3000 free"
+
+# Workspace
+npm run smoke:all                     # run smoke tests (server+client)
+```
+
+### Environment Tips
+
+- Required server env: `JWT_SECRET`, `DATABASE_URL`, `PORT`, `BASE_URL`, `FRONTEND_URL`.
+- Generate a strong secret:
+   ```zsh
+   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+   ```
+- Local database URL example:
+   ```
+   DATABASE_URL=postgresql://$USER@localhost:5432/url_shortener
+   ```
+- Health quick-checks:
+   - Backend: `curl -s http://localhost:5001/api/health`
+   - Frontend dev: visit `http://localhost:3000`
+
 ## Local Development
 
 **Currently running locally:**

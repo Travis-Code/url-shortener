@@ -1,9 +1,10 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import pool from '../db/pool';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import xss from 'xss';
 import rateLimit from 'express-rate-limit';
+import { logger } from '../utils/logger';
 
 const router = Router();
 
@@ -17,7 +18,7 @@ const authLimiter = rateLimit({
 });
 
 // SIGNUP
-router.post('/signup', authLimiter, async (req: Request, res: Response) => {
+router.post('/signup', authLimiter, async (req: Request, res: Response, next: NextFunction) => {
   try {
     let { username, email, password } = req.body;
 
@@ -63,13 +64,15 @@ router.post('/signup', authLimiter, async (req: Request, res: Response) => {
     if (err.code === '23505') {
       return res.status(400).json({ error: 'Username or email already exists' });
     }
-    console.error('Signup error:', err);
-    res.status(500).json({ error: 'Server error' });
+    logger.error('signup_error', { message: err.message });
+    err.status = 500;
+    err.publicMessage = 'Server error';
+    next(err);
   }
 });
 
 // LOGIN
-router.post('/login', authLimiter, async (req: Request, res: Response) => {
+router.post('/login', authLimiter, async (req: Request, res: Response, next: NextFunction) => {
   try {
     let { email, password } = req.body;
 
@@ -105,9 +108,11 @@ router.post('/login', authLimiter, async (req: Request, res: Response) => {
     });
 
     res.json({ user: { id: user.id, username: user.username, email: user.email }, token });
-  } catch (err) {
-    console.error('Login error:', err);
-    res.status(500).json({ error: 'Server error' });
+  } catch (err: any) {
+    logger.error('login_error', { message: err.message });
+    err.status = 500;
+    err.publicMessage = 'Server error';
+    next(err);
   }
 });
 

@@ -1,14 +1,16 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import geoip from 'geoip-lite';
 import { UAParser } from 'ua-parser-js';
+import { randomBytes } from 'crypto';
 import pool from './db/pool';
 import authRoutes from './routes/auth';
 import urlRoutes from './routes/urls';
 import diagnosticsRoutes from './routes/diagnostics';
 import adminRoutes from './routes/admin';
+import { logger } from './utils/logger';
 
 dotenv.config();
 
@@ -29,6 +31,23 @@ app.use(
     credentials: true,
   })
 );
+
+// Correlation ID middleware
+app.use((req: any, _res: Response, next: NextFunction) => {
+  req.correlationId = randomBytes(8).toString('hex');
+  next();
+});
+
+// Request logging with correlation ID
+app.use((req: any, _res: Response, next: NextFunction) => {
+  logger.info('request', {
+    correlationId: req.correlationId,
+    method: req.method,
+    path: req.path,
+    ip: req.ip,
+  });
+  next();
+});
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -98,9 +117,22 @@ app.get('/:shortCode', async (req, res) => {
 
     res.redirect(url.original_url);
   } catch (err) {
-    console.error('Error redirecting:', err);
+    logger.error('redirect_error', { message: err instanceof Error ? err.message : String(err) });
     res.status(500).send('Server error');
   }
+});
+
+// Global error handler (last middleware)
+app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+  const status = err.status || 500;
+  const code = err.code || 'internal_error';
+  const message = err.publicMessage || 'Server error';
+  logger.error('unhandled_error', {
+    status,
+    code,
+    message: err.message || message,
+  });
+  res.status(status).json({ error: message, code });
 });
 
 export default app;
