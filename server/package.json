@@ -12,6 +12,7 @@
     "cleanup": "ts-node src/scripts/cleanupExpired.ts",
     "test": "jest --runInBand",
     "lint": "eslint src --ext .ts"
+    ,"heroku-postbuild": "npm run build"
   },
   "keywords": [],
   "author": "",
