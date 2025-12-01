@@ -1,7 +1,7 @@
 import request from 'supertest';
-import app from '../src/app';
-import { initializeDatabase } from '../src/db/init';
-import pool from '../src/db/pool';
+import app from '../app';
+import { initializeDatabase } from '../db/init';
+import pool from '../db/pool';
 
 const genEmail = () => `test+${Date.now()}_${Math.floor(Math.random()*10000)}@example.com`;
 
