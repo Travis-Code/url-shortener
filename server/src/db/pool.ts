@@ -14,10 +14,12 @@ if (!connectionString) {
   console.error('[DB] No DATABASE_URL found');
 }
 
-// Simple pool configuration
+
+// Use SSL only in production (Railway), disable for local
+const isProd = process.env.NODE_ENV === 'production';
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+  ...(isProd ? { ssl: { rejectUnauthorized: false } } : {})
 });
 
 pool.on('error', (err) => {
