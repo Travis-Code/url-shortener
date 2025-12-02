@@ -18,8 +18,8 @@ const PORT = process.env.NODE_ENV === 'production'
     })())
   : Number(process.env.PORT || 5001);
 
-// Initialize database with retries
-const initializeDatabaseWithRetry = async (maxRetries = 30, delayMs = 2000) => {
+// Initialize database with retries (non-blocking for server startup)
+const initializeDatabaseWithRetry = async (maxRetries = 10, delayMs = 3000) => {
   console.log('Starting database initialization with retries...');
   console.log('DATABASE_URL:', process.env.DATABASE_URL ? '***set***' : 'NOT SET');
   console.log('Runtime PORT:', PORT);
