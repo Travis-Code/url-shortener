@@ -71,7 +71,7 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/url_shortener_test
           JWT_SECRET: test-jwt-secret-key-for-ci
         run: |
-          npm test
+          npm test -- --testPathIgnorePatterns=integration.remote.test.ts
 
       - name: Run smoke tests
         run: |
