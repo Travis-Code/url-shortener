@@ -5,12 +5,12 @@ let app;
 // Prefer built output; fall back to ts-node in dev
 try {
 	// Prefer compiled app module which exports the Express app
-	app = require('../dist/app.js');
+	app = require('../../dist/app.js');
 } catch (_e) {
 	try {
 		// Fallback to TypeScript source app module
 		require('ts-node/register');
-		app = require('../src/app.ts');
+		app = require('../app.ts');
 	} catch (e2) {
 		console.error('Could not load server app (dist or src):', e2.message);
 		process.exit(2);
