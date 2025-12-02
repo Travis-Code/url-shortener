@@ -14,12 +14,14 @@ if (!connectionString) {
   console.error('[DB] No DATABASE_URL found');
 }
 
+// Railway or any remote DB with SSL (detect by sslmode in connection string)
+const requiresSSL = connectionString?.includes('sslmode=require') || process.env.NODE_ENV === 'production';
 
-// Use SSL only in production (Railway), disable for local
-const isProd = process.env.NODE_ENV === 'production';
+console.log('[DB] SSL required:', requiresSSL);
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: isProd ? { rejectUnauthorized: false } : false
+  ssl: requiresSSL ? { rejectUnauthorized: false } : false
 });
 
 pool.on('error', (err) => {
