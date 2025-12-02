@@ -206,6 +206,45 @@ FullStackProject/
 
 ## 🚀 Quick Start
 
+### 🐳 Docker (Recommended)
+
+Get the entire stack running in one command:
+
+```bash
+# 1. Copy environment template
+cp .env.docker.example .env
+
+# 2. Generate JWT secret and update .env
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+
+# 3. Start all services (Postgres + Backend + Frontend)
+docker-compose up
+
+# 4. Access the app
+# Frontend: http://localhost:3000
+# Backend API: http://localhost:5001
+# Postgres: localhost:5432
+```
+
+**Quick Commands:**
+```bash
+# Build and start in background
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop all services
+docker-compose down
+
+# Reset database
+docker-compose down -v && docker-compose up
+```
+
+---
+
+### 💻 Manual Setup
+
 ### 📋 Prerequisites
 
 | Requirement | Version | Installation |
@@ -526,6 +565,49 @@ VITE_API_URL=<your Railway backend URL>
 
 ---
 
+### 🐳 Docker Production Deployment
+
+**Using Docker Compose:**
+```bash
+# 1. Create production .env file
+cp .env.docker.example .env
+
+# 2. Update .env with production values:
+#    - Strong POSTGRES_PASSWORD
+#    - Secure JWT_SECRET (64+ characters)
+#    - Production FRONTEND_URL
+
+# 3. Deploy with production compose file
+docker-compose -f docker-compose.prod.yml up -d
+
+# 4. Check service health
+docker-compose -f docker-compose.prod.yml ps
+docker-compose -f docker-compose.prod.yml logs
+```
+
+**Deploy to Any Docker-Enabled Platform:**
+- **DigitalOcean App Platform** - Import repo, select Dockerfile
+- **AWS ECS/Fargate** - Push images to ECR, deploy with task definitions
+- **Google Cloud Run** - `gcloud run deploy` from repository
+- **Azure Container Instances** - Deploy from Docker Hub or ACR
+
+**Docker Hub Deployment:**
+```bash
+# Build and tag images
+docker build -t yourusername/urlshortener-api:latest ./server
+docker build -t yourusername/urlshortener-web:latest ./client
+
+# Push to Docker Hub
+docker push yourusername/urlshortener-api:latest
+docker push yourusername/urlshortener-web:latest
+
+# Pull and run on any server
+docker pull yourusername/urlshortener-api:latest
+docker run -d -p 5001:5001 --env-file .env yourusername/urlshortener-api:latest
+```
+
+---
+
 ### Deployment Checklist
 
 **Backend (Railway):**
@@ -542,6 +624,13 @@ VITE_API_URL=<your Railway backend URL>
 - [ ] `VITE_API_URL` environment variable set
 - [ ] Deployment successful
 - [ ] Application loads without errors
+
+**Docker Production:**
+- [ ] Environment variables secured (.env not in git)
+- [ ] Strong passwords and JWT secret set
+- [ ] Database volume persisted
+- [ ] Health checks passing
+- [ ] HTTPS/SSL configured (use reverse proxy like Traefik/Nginx)
 
 **Validation:**
 - [ ] User signup/login flow works
@@ -796,10 +885,31 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
+## 🐳 Why Docker?
+
+**For Development:**
+- ✅ One command setup - no manual PostgreSQL installation
+- ✅ Identical environment across team members
+- ✅ Hot reload works in containers
+- ✅ Easy database resets
+
+**For Production:**
+- ✅ Deploy anywhere (AWS, GCP, Azure, DigitalOcean)
+- ✅ Environment consistency (dev = prod)
+- ✅ Easy rollbacks with image versioning
+- ✅ Better resource isolation and scaling
+- ✅ Built-in health checks
+
+**Both Deployment Options Work:**
+- **Docker:** Best for self-hosting or multi-cloud portability
+- **Railway + Vercel:** Best for managed PaaS with zero DevOps
+
+---
+
 <div align="center">
 
 **⭐ Star this repo if you find it helpful!**
 
-Ready to deploy? → [Vercel](https://vercel.com) | [Railway](https://railway.app) | [Netlify](https://netlify.com)
+Ready to deploy? → [Docker](https://docker.com) | [Vercel](https://vercel.com) | [Railway](https://railway.app)
 
 </div>
