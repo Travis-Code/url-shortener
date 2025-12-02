@@ -3,6 +3,8 @@
 ![CI](https://github.com/Travis-Code/url-shortener/actions/workflows/ci.yml/badge.svg)
 
 A modern full-stack URL shortening application with real-time analytics, user authentication, and a responsive UI.
+> 🎯 **Try the working demo**: [url-shortener-prototype](https://github.com/Travis-Code/url-shortener-prototype) - Fully functional local version you can run on your machine
+
 
 ## Project Status
 
