@@ -232,8 +232,8 @@
 - [x] CI failure debugging (shebang fix)
 
 #### Key Deliverables
-- `server/test/auth_and_urls.test.ts`
-- `server/test/smoke.js`
+- `server/src/test/auth_and_urls.test.ts`
+- `server/src/test/smoke.js`
 - `client/test/smoke.js`
 - `scripts/smoke.sh`
 - `.github/workflows/ci.yml`

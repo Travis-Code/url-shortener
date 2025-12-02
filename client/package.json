@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint src --ext .ts,.tsx",
-    "test": "node ./test/smoke.js"
+    "smoke": "node ./test/smoke.js"
   },
   "dependencies": {
     "react": "^18.2.0",

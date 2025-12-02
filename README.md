@@ -173,7 +173,9 @@ FullStackProject/
 │   │   ├── scripts/             # Utility scripts
 │   │   │   ├── seed.ts         # Demo data seeder
 │   │   │   └── cleanupExpired.ts
-│   │   ├── test/               # Integration tests
+│   │   ├── test/               # Integration & smoke tests
+│   │   │   ├── smoke.js        # Server smoke test
+│   │   │   └── *.test.ts       # Jest integration tests
 │   │   └── index.ts           # Express app entry point
 │   └── .env.example
 │

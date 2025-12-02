@@ -21,6 +21,8 @@ npm install
 npm run dev
 ```
 
+- Dev server: `http://localhost:3000`
+
 ## Configuration
 - API base is proxied via `vite.config.ts`
 - Add environment variables if applicable (e.g., `VITE_API_URL`)
