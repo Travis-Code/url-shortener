@@ -10,12 +10,20 @@ if (!process.env.JWT_SECRET) {
   process.exit(1);
 }
 
-const PORT = process.env.PORT || 5000;
+// In production (Railway), always use the platform-provided PORT
+const PORT = process.env.NODE_ENV === 'production'
+  ? (process.env.PORT ? Number(process.env.PORT) : (() => {
+      console.error('FATAL: PORT is not provided by the platform in production');
+      process.exit(1);
+    })())
+  : Number(process.env.PORT || 5001);
 
 // Initialize database with retries
 const initializeDatabaseWithRetry = async (maxRetries = 30, delayMs = 2000) => {
   console.log('Starting database initialization with retries...');
   console.log('DATABASE_URL:', process.env.DATABASE_URL ? '***set***' : 'NOT SET');
+  console.log('Runtime PORT:', PORT);
+  console.log('NODE_ENV:', process.env.NODE_ENV);
   
   for (let i = 0; i < maxRetries; i++) {
     try {
