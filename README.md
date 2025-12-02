@@ -4,7 +4,20 @@
 
 A modern full-stack URL shortening application with real-time analytics, user authentication, and a responsive UI.
 
-**Status:** ✅ Fully working locally with PostgreSQL database
+## Project Status
+
+**✅ Local Development:** Fully functional and tested
+- Backend running on `http://localhost:5001`
+- Frontend running on `http://localhost:3000`
+- PostgreSQL database with complete schema and seeded data
+- All features working: authentication, URL shortening, analytics, admin dashboard
+
+**🚧 Production Deployment:** In progress
+- Backend deployed to Railway (investigating database connection issues)
+- Frontend deployment pending backend stability
+- CI/CD pipeline active and passing (GitHub Actions)
+
+**Ready to use locally!** Follow the [Getting Started](#getting-started) guide below to run the application on your machine.
 
 ## How It Works
 
