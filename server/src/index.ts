@@ -11,12 +11,14 @@ if (!process.env.JWT_SECRET) {
 }
 
 // In production (Railway), always use the platform-provided PORT
-const PORT = process.env.NODE_ENV === 'production'
-  ? (process.env.PORT ? Number(process.env.PORT) : (() => {
-      console.error('FATAL: PORT is not provided by the platform in production');
-      process.exit(1);
-    })())
-  : Number(process.env.PORT || 5001);
+// Railway sets PORT automatically; local dev defaults to 5001
+const PORT = process.env.PORT ? Number(process.env.PORT) : 5001;
+
+// Safety check for production
+if (process.env.NODE_ENV === 'production' && !process.env.PORT) {
+  console.error('FATAL: PORT is not provided by the platform in production');
+  process.exit(1);
+}
 
 // Initialize database with retries (non-blocking for server startup)
 const initializeDatabaseWithRetry = async (maxRetries = 10, delayMs = 3000) => {
