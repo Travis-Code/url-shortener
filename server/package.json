@@ -7,7 +7,7 @@
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "smoke": "node ./test/smoke.js",
+    "smoke": "node ./src/test/smoke.js",
     "seed": "ts-node src/scripts/seed.ts",
     "cleanup": "ts-node src/scripts/cleanupExpired.ts",
     "test": "jest --runInBand",
