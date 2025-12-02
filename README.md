@@ -206,7 +206,16 @@ FullStackProject/
 
 ## 🚀 Quick Start
 
-### 🐳 Docker (Recommended)
+### 📦 Deploy Options: Native vs Docker
+
+- **Native (Recommended for production):**
+  - Backend on Railway (Node builder), Frontend on Vercel.
+  - Fast, minimal config, managed infra. Use this for your live app.
+- **Docker (Optional):**
+  - Great for local prod parity and self-hosting.
+  - Use `docker compose` to run Postgres + API + Nginx.
+
+### 🐳 Docker (Optional)
 
 Get the entire stack running in one command:
 
@@ -218,7 +227,7 @@ cp .env.docker.example .env
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
 # 3. Start all services (Postgres + Backend + Frontend)
-docker-compose up
+docker compose up
 
 # 4. Access the app
 # Frontend: http://localhost:3000
@@ -229,16 +238,16 @@ docker-compose up
 **Quick Commands:**
 ```bash
 # Build and start in background
-docker-compose up -d
+docker compose up -d
 
 # View logs
-docker-compose logs -f
+docker compose logs -f
 
 # Stop all services
-docker-compose down
+docker compose down
 
 # Reset database
-docker-compose down -v && docker-compose up
+docker compose down -v && docker compose up
 ```
 
 ---
@@ -507,7 +516,7 @@ lsof -ti:3000 | xargs kill -9 2>/dev/null || echo "Port 3000 free"
 
 ---
 
-### Backend Deployment (Railway)
+### Backend Deployment (Railway) — Native (Recommended)
 
 **Recommended Platform:** [Railway](https://railway.app)
 
@@ -578,11 +587,28 @@ cp .env.docker.example .env
 #    - Production FRONTEND_URL
 
 # 3. Deploy with production compose file
-docker-compose -f docker-compose.prod.yml up -d
+docker compose -f docker-compose.prod.yml up -d --build
 
 # 4. Check service health
-docker-compose -f docker-compose.prod.yml ps
-docker-compose -f docker-compose.prod.yml logs
+docker compose -f docker-compose.prod.yml ps
+docker compose -f docker-compose.prod.yml logs -f --tail=200
+```
+
+**How it works:**
+- `client` is served by Nginx on `http://localhost` (port 80).
+- `server` listens on port `5001` and is reachable internally at `http://server:5001`.
+- Nginx proxies `GET/POST /api/*` to `http://server:5001/api/*` so the SPA can call `"/api"` without extra config.
+
+**Smoke test locally:**
+```bash
+# Frontend index
+curl -s http://localhost | head -20
+
+# Backend health via proxy
+curl -s http://localhost/api/health
+
+# Backend health direct
+curl -s http://localhost:5001/api/health
 ```
 
 **Deploy to Any Docker-Enabled Platform:**
