@@ -359,22 +359,134 @@ cd server
 npm run smoke
 ```
 
-## Deployment Notes
+## Deployment
 
-This repository includes a GitHub Actions workflow (`.github/workflows/ci.yml`) that builds and tests both the backend and frontend.
+### Production Status
 
-For deployment to production platforms like Vercel, Railway, Render, or Heroku, you'll need to:
-1. Configure environment variables on your hosting platform
-2. Set up PostgreSQL database
-3. Update `BASE_URL` and `FRONTEND_URL` to production URLs
+🚧 **Backend**: Deployed to Railway (troubleshooting database connection issues)
+- URL: `https://url-shortener-production-c83f.up.railway.app`
+- Status: Currently returning 502 errors, investigating database SSL configuration
+- Database: Railway PostgreSQL with SSL enabled
 
-### Production Environment Variables
-- Server (`server/.env.production.example`): `DATABASE_URL`, `JWT_SECRET`, `CORS_ORIGIN`, `PORT`, `NODE_ENV`
-- Client (`client/.env.production.example`): `VITE_API_URL`
+⏳ **Frontend**: Not yet deployed (pending backend stability)
+- Target: Vercel or Netlify
+- Will connect to Railway backend once stable
 
-### Quick Deploy Steps
-- Backend (Railway): Import repo, add PostgreSQL plugin, set env vars from `server/.env.production.example`, deploy, then verify `GET /api/health` on the Railway URL.
-- Frontend (Vercel): Import repo, set `VITE_API_URL` to the Railway backend URL, build command `npm run build`, output `dist`, deploy.
+🟢 **Local Development**: Fully functional
+- Backend: `http://localhost:5001`
+- Frontend: `http://localhost:3000`
+- Database: Local PostgreSQL
+
+### Deployment Configuration
+
+**Backend (Railway):**
+- Repository: Connected to GitHub `Travis-Code/url-shortener`
+- Service: Node.js with PostgreSQL plugin
+- Build Command: `npm install && npm run build`
+- Start Command: `npm start`
+- Environment Variables:
+  - `DATABASE_URL` - Provided by Railway PostgreSQL plugin with `?sslmode=require`
+  - `JWT_SECRET` - 256-bit cryptographic random string
+  - `NODE_ENV=production`
+  - `FRONTEND_URL` - Set to frontend URL once deployed
+  - `BASE_URL` - Railway-provided URL
+
+**Frontend (Pending):**
+- Platform: Vercel or Netlify (TBD)
+- Build Command: `npm run build`
+- Output Directory: `dist`
+- Environment Variables:
+  - `VITE_API_URL` - Railway backend URL
+
+### CI/CD Pipeline
+
+This project uses GitHub Actions for continuous integration:
+
+- **Workflow File**: `.github/workflows/ci.yml`
+- **Trigger**: Push or PR to `main` branch
+- **Steps**:
+  1. Checkout code
+  2. Set up Node.js 18
+  3. Install dependencies (server + client)
+  4. Build both applications
+  5. Run integration tests (local only)
+  6. Execute smoke tests
+
+**Current Status**: ✅ Passing (remote integration tests temporarily disabled)
+
+**Note**: Remote integration tests against Railway backend are currently skipped in CI due to 502 errors. They will be re-enabled once the production backend is stable.
+
+### Troubleshooting Production Deployment
+
+**Known Issues:**
+
+1. **Railway Backend 502 Errors**
+   - Symptom: All API endpoints returning 502 Bad Gateway
+   - Suspected Cause: Database connection SSL configuration or Railway internal networking
+   - Investigation Steps:
+     - Check Railway dashboard logs for specific errors
+     - Verify DATABASE_URL includes `?sslmode=require`
+     - Confirm all environment variables are set
+     - Test database connection from Railway shell
+
+2. **Database SSL Configuration**
+   - Code includes conditional SSL logic (production only)
+   - Railway requires `sslmode=require` in connection string
+   - Local development works without SSL
+
+**Deployment Checklist:**
+
+Backend (Railway):
+- [x] Repository connected to GitHub
+- [x] PostgreSQL plugin added
+- [x] Environment variables configured
+- [x] Build and start commands set
+- [x] Initial deployment completed
+- [ ] Health endpoint responding successfully
+- [ ] Database connection working
+- [ ] API endpoints returning expected responses
+
+Frontend (Vercel/Netlify):
+- [ ] Repository imported
+- [ ] Build settings configured
+- [ ] Environment variables set (`VITE_API_URL`)
+- [ ] Domain configured
+- [ ] Deployment successful
+- [ ] Application loads and connects to backend
+
+Testing & Validation:
+- [x] Local integration tests passing
+- [x] CI pipeline passing (with remote tests skipped)
+- [ ] Production health check successful
+- [ ] Remote integration tests re-enabled and passing
+- [ ] Full user flow tested in production
+- [ ] Analytics tracking verified in production
+
+### Next Steps
+
+1. **Fix Railway Backend**
+   - Access Railway dashboard to view deployment logs
+   - Identify specific database connection error
+   - Test connection using Railway shell or SQL console
+   - Verify SSL configuration is applied correctly
+   - Redeploy if necessary
+
+2. **Re-enable Remote Tests**
+   - Once backend is healthy, update `.github/workflows/ci.yml`
+   - Remove `--testPathIgnorePatterns=integration.remote.test.ts`
+   - Verify all remote integration tests pass
+
+3. **Deploy Frontend**
+   - Choose platform (Vercel recommended)
+   - Configure build settings
+   - Set `VITE_API_URL` to Railway backend URL
+   - Test full user flow in production
+
+4. **Final Validation**
+   - Complete end-to-end testing
+   - Verify analytics tracking
+   - Test all user flows
+   - Update README with live demo links
 
 ## API Endpoints
 
