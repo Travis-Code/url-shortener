@@ -1,569 +1,630 @@
-# URL Shortener - Full Stack Project
+<div align="center">
 
-![CI](https://github.com/Travis-Code/url-shortener/actions/workflows/ci.yml/badge.svg)
+# 🔗 URL Shortener
 
-A modern full-stack URL shortening application with real-time analytics, user authentication, and a responsive UI.
-> 🎯 **Try the working demo**: [url-shortener-prototype](https://github.com/Travis-Code/url-shortener-prototype) - Fully functional local version you can run on your machine
+### Production-Ready Full-Stack Application
 
+[![CI](https://github.com/Travis-Code/url-shortener/actions/workflows/ci.yml/badge.svg)](https://github.com/Travis-Code/url-shortener/actions)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.2-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-18-61dafb?logo=react)](https://reactjs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-16+-339933?logo=node.js)](https://nodejs.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-12+-4169E1?logo=postgresql)](https://www.postgresql.org/)
 
-## Project Status
+**A modern, enterprise-grade URL shortening platform with comprehensive analytics, user authentication, and admin controls.**
 
-**✅ Local Development:** Fully functional and tested
-- Backend running on `http://localhost:5001`
-- Frontend running on `http://localhost:3000`
-- PostgreSQL database with complete schema and seeded data
-- All features working: authentication, URL shortening, analytics, admin dashboard
+[Features](#-features) • [Quick Start](#-quick-start) • [Tech Stack](#-tech-stack) • [API](#-api-endpoints) • [Architecture](#-project-architecture)
 
-**🚧 Production Deployment:** In progress
-- Backend deployed to Railway (investigating database connection issues)
-- Frontend deployment pending backend stability
-- CI/CD pipeline active and passing (GitHub Actions)
+</div>
 
-**Ready to use locally!** Follow the [Getting Started](#getting-started) guide below to run the application on your machine.
+---
 
-## How It Works
+## 🎯 Overview
 
-**URL Shortener** transforms long URLs into short, shareable links while tracking engagement analytics.
+Transform long URLs into short, trackable links with powerful analytics. Built with production-ready patterns including JWT authentication, PostgreSQL with proper schema design, comprehensive security measures, and real-time click tracking.
 
-### User Flow
+**Perfect for:**
+- 📊 Marketing campaigns with detailed attribution
+- 🎓 Educational content distribution
+- 💼 Professional link management
+- 📱 Social media optimization
 
-1. **Sign Up / Log In**
-   - Create an account or log in with existing credentials
-   - Authentication uses JWT tokens for secure sessions
+### ✨ What Makes This Special
 
-2. **Create Short URLs**
-   - Paste any long URL into the dashboard
-   - Add optional title and description for organization
-   - Get an instant short link (e.g., `http://localhost:5001/abc1234`)
+- **Port Isolation System** - Custom guard scripts prevent development conflicts
+- **Enterprise Security** - Helmet.js, rate limiting, XSS protection, strong JWT
+- **Complete Analytics Suite** - Geographic tracking, device breakdown, browser analytics
+- **Admin Dashboard** - Full system monitoring and user management
+- **CI/CD Ready** - GitHub Actions, smoke tests, automated validation
 
-3. **Share & Track**
-   - Share your short link anywhere (email, social media, documents)
-   - Every click is automatically tracked with metadata (IP, referrer, user agent, timestamp)
-   - View real-time click counts on your dashboard
+## 📸 Screenshots
 
-4. **View Analytics**
-   - See total clicks per URL
-   - Access detailed click history with IP addresses, timestamps, and referrer information
-   - Monitor which links are performing best
+> *Add screenshots here after deployment*
 
-5. **Manage Links**
-   - View all your shortened URLs in one place
-   - Delete links you no longer need
-   - Links cascade-delete their click analytics automatically
+```
+[Login Page] [Dashboard] [Analytics] [Admin Panel]
+```
 
-### Example Use Cases
+## 🚀 Live Demo
 
-- **Marketing Campaigns**: Track which channels drive the most traffic
-- **Social Media**: Share clean, professional links instead of long URLs
-- **Email Newsletters**: Monitor engagement and click-through rates
-- **Personal Portfolio**: Organize and track your shared content
+> **Status:** Ready for deployment
+> 
+> Local development fully functional on `http://localhost:3000`
+> - Test account: `admin@example.com` / `password123`
 
-## Features
+---
 
-✨ **Core Features:**
-- Create short, shareable URLs
-- Custom titles and descriptions
-- Real-time click tracking and analytics
-- User authentication with JWT
-- Responsive design with Tailwind CSS
-- User dashboard to manage links
-- **Admin dashboard** - Comprehensive system monitoring and management
+## ⚡ Features
 
-📊 **Analytics (User Dashboard):**
-- Track total clicks per URL
-- View recent clicks with IP, referrer, and timestamp
-- Real-time expiration status badges
-- **Geographic tracking** - Country and city from IP address
-- **Top locations chart** - Visual breakdown of clicks by location
-- **Browser analytics** - Track which browsers users are using (Chrome, Safari, Firefox, etc.)
-- **Operating system analytics** - See which OS visitors use (Windows, macOS, iOS, Android, etc.)
-- **Device type analytics** - Monitor mobile, tablet, and desktop usage
+<table>
+<tr>
+<td width="50%">
 
-👨‍💼 **Admin Dashboard:**
-- **Overview Stats** - Total users, URLs, clicks, and activity metrics
-- **User Management** - View all users with URL count and click stats, ban/unban users
-- **URL Management** - View and delete any URL in the system
-- **Advanced Analytics**:
-  - Filter by user or time range (7/30/90 days, all time)
-  - Summary cards: total clicks, unique URLs, mobile traffic %, unique visitors
-  - **Geographic breakdown**: Top 5 countries with visual progress bars
-  - **Browser distribution**: Top 5 browsers with percentages
-  - **Device breakdown**: Mobile/Desktop/Tablet split
-  - **Top 10 URLs**: Ranked by performance with click counts and share %
-  - **Recent clicks table**: Full tracking data with browser, OS, device, location, IP
-  - Real-time filtering and data visualization
+### 🔐 Authentication & Security
+- JWT-based authentication
+- Bcrypt password hashing
+- Rate limiting (5 attempts/15min)
+- XSS input sanitization
+- Helmet.js security headers
+- CORS protection
+- Admin role-based access
 
-⏰ **Link Expiration:**
-- Set optional expiration dates when creating URLs
-- Automatic expiration enforcement on redirect
-- Visual status indicators (Active, Expiring, Expired)
-- Manual cleanup script to purge expired links
+### 📊 Analytics Dashboard
+- Real-time click tracking
+- Geographic insights (country/city)
+- Browser & OS breakdown
+- Device type analytics (mobile/tablet/desktop)
+- Referrer tracking
+- Time-based filtering
+- Visual charts & progress bars
 
-🌍 **Geolocation:**
-- Automatic IP-to-location lookup using geoip-lite
-- Track clicks by country and city
-- Top 5 countries visualization in admin dashboard
-- Location displayed in recent clicks table
+</td>
+<td width="50%">
 
-🔒 **Security:**
-- **Helmet.js** - HTTP security headers
-- **Rate limiting** - Brute force protection (5 attempts per 15 minutes)
-- **XSS protection** - Input sanitization on all user inputs
-- **Strong JWT secrets** - 256-bit cryptographic random strings (no fallbacks)
-- **Input validation** - Email regex and password requirements (min 8 characters)
-- **Password hashing** with bcryptjs
-- **JWT-based authentication**
-- **Protected routes** and API endpoints
-- **Admin middleware** - Role-based access control
-- **CORS enabled** with environment-based origins
-- **Payload size limits** (10MB)
-- Complete security documentation in SECURITY.md
+### 🔗 URL Management
+- Custom short codes
+- Title & description metadata
+- Optional expiration dates
+- Bulk link management
+- One-click deletion
+- Auto-cleanup scripts
 
-## Tech Stack
+### 👨‍💼 Admin Tools
+- System-wide statistics
+- User management (ban/unban)
+- All URLs monitoring
+- Top performers ranking
+- Advanced filtering
+- Full audit trail
 
-**Backend:**
-- Node.js + Express
-- TypeScript
-- PostgreSQL
-- JWT Authentication
-- bcryptjs for password hashing
-- geoip-lite for geolocation
-- ua-parser-js for user-agent parsing
-- helmet for HTTP security headers
-- express-rate-limit for brute force protection
-- xss for input sanitization
+</td>
+</tr>
+</table>
 
-**Frontend:**
-- React 18 with TypeScript
-- React Router v6
-- Tailwind CSS
-- Axios for HTTP requests
-- Vite for build tooling
-- Context API for auth state management
+### 🛡️ Production-Grade Infrastructure
 
-## Project Structure
+- **Port Isolation** - Automatic guards prevent dev conflicts
+- **CI/CD Pipeline** - GitHub Actions with smoke tests
+- **Database Migrations** - Version-controlled schema updates
+- **Error Handling** - Comprehensive validation & logging
+- **Scalable Architecture** - RESTful API design
+
+---
+
+## 🛠️ Tech Stack
+
+<table>
+<tr>
+<td align="center" width="33%">
+
+### Frontend
+![React](https://img.shields.io/badge/React-18-61dafb?style=for-the-badge&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.2-blue?style=for-the-badge&logo=typescript)
+![Vite](https://img.shields.io/badge/Vite-5.0-646CFF?style=for-the-badge&logo=vite)
+![Tailwind](https://img.shields.io/badge/Tailwind-3.3-38B2AC?style=for-the-badge&logo=tailwind-css)
+
+</td>
+<td align="center" width="33%">
+
+### Backend
+![Node.js](https://img.shields.io/badge/Node.js-16+-339933?style=for-the-badge&logo=node.js)
+![Express](https://img.shields.io/badge/Express-4.18-000000?style=for-the-badge&logo=express)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.2-blue?style=for-the-badge&logo=typescript)
+![JWT](https://img.shields.io/badge/JWT-Auth-000000?style=for-the-badge&logo=jsonwebtokens)
+
+</td>
+<td align="center" width="33%">
+
+### Database & Tools
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-12+-4169E1?style=for-the-badge&logo=postgresql)
+![GitHub Actions](https://img.shields.io/badge/CI/CD-Actions-2088FF?style=for-the-badge&logo=github-actions)
+![Jest](https://img.shields.io/badge/Jest-Testing-C21325?style=for-the-badge&logo=jest)
+
+</td>
+</tr>
+</table>
+
+**Key Dependencies:**
+- **Authentication:** `jsonwebtoken`, `bcryptjs`
+- **Security:** `helmet`, `express-rate-limit`, `xss`, `cors`
+- **Analytics:** `geoip-lite`, `ua-parser-js`
+- **Database:** `pg` (PostgreSQL client)
+- **Development:** `ts-node-dev`, `typescript`, `eslint`
+
+---
+
+## 📂 Project Architecture
 
 ```
 FullStackProject/
-├── server/                 # Backend API
+├── 🖥️  server/                      # Backend API (Node.js + Express)
 │   ├── src/
-│   │   ├── db/            # Database setup and initialization
-│   │   │   └── migrations/ # Database migrations (admin role, etc.)
-│   │   ├── routes/        # API routes (auth, urls, admin, diagnostics)
-│   │   ├── middleware/    # Auth and admin middleware
-│   │   ├── scripts/       # Seed and cleanup scripts
-│   │   ├── utils/         # Utility functions
-│   │   └── index.ts       # Server entry point
-│   ├── package.json
-│   ├── tsconfig.json
+│   │   ├── db/                     # Database layer
+│   │   │   ├── init.ts            # Schema initialization
+│   │   │   ├── pool.ts            # PostgreSQL connection pool
+│   │   │   └── migrations/        # Version-controlled migrations
+│   │   ├── routes/                # RESTful API endpoints
+│   │   │   ├── auth.ts           # Login, signup
+│   │   │   ├── urls.ts           # URL CRUD, redirect, analytics
+│   │   │   ├── admin.ts          # Admin dashboard APIs
+│   │   │   └── diagnostics.ts   # Health checks
+│   │   ├── middleware/           # Express middleware
+│   │   │   ├── auth.ts          # JWT verification
+│   │   │   └── admin.ts         # Role-based access control
+│   │   ├── scripts/             # Utility scripts
+│   │   │   ├── seed.ts         # Demo data seeder
+│   │   │   └── cleanupExpired.ts
+│   │   ├── test/               # Integration tests
+│   │   └── index.ts           # Express app entry point
 │   └── .env.example
 │
-├── client/                # Frontend React app
+├── 🎨 client/                      # Frontend SPA (React + Vite)
 │   ├── src/
-│   │   ├── api/          # API client with admin endpoints
-│   │   ├── pages/        # Page components (Home, Login, Signup, Dashboard, Analytics, Admin)
-│   │   ├── components/   # Reusable components (ProtectedRoute)
-│   │   ├── utils/        # Context and utilities (AuthContext)
-│   │   ├── App.tsx
-│   │   └── main.tsx
-│   ├── index.html
-│   ├── vite.config.ts
-│   ├── tailwind.config.js
-│   └── package.json
+│   │   ├── pages/               # Route components
+│   │   │   ├── Home.tsx        # Landing page
+│   │   │   ├── Login.tsx       # Authentication
+│   │   │   ├── Dashboard.tsx   # User URL management
+│   │   │   ├── Analytics.tsx   # Detailed click stats
+│   │   │   └── Admin.tsx       # System administration
+│   │   ├── components/         # Reusable UI components
+│   │   ├── api/               # Axios API client
+│   │   └── utils/            # Auth context, helpers
+│   └── vite.config.ts
 │
-├── SECURITY.md           # Security documentation
-└── README.md
+├── 🔧 scripts/                    # Development utilities
+│   ├── check-port.sh            # Port isolation guard
+│   └── smoke.sh                 # Automated smoke tests
+│
+└── 📚 Documentation
+    ├── README.md               # This file
+    ├── SECURITY.md            # Security best practices
+    └── templates/            # README templates
 ```
 
-## Getting Started
+---
 
-### Prerequisites
+## 🚀 Quick Start
 
-- Node.js 16+ and npm
-- PostgreSQL 12+ (running locally)
+### 📋 Prerequisites
 
-### Database Setup
+| Requirement | Version | Installation |
+|-------------|---------|-------------|
+| **Node.js** | 16+ | [nodejs.org](https://nodejs.org/) |
+| **PostgreSQL** | 12+ | [postgresql.org](https://www.postgresql.org/) or `brew install postgresql` |
+| **npm** | Latest | Bundled with Node.js |
 
-Create the PostgreSQL database:
+---
+
+### 🗄️ Database Setup
+
 ```bash
+# Create the PostgreSQL database
 createdb url_shortener
 ```
 
-The database tables will be automatically created when the backend starts.
+> Tables are auto-created when the backend starts for the first time.
 
-### Backend Setup
+---
 
-1. Navigate to the server directory:
+### ⚙️ Backend Setup
+
 ```bash
+# 1. Navigate to server directory
 cd server
-```
 
-2. Install dependencies:
-```bash
+# 2. Install dependencies
 npm install
-```
 
-3. Create a `.env` file based on `.env.example`:
-```bash
+# 3. Configure environment
 cp .env.example .env
-```
 
-4. Update `.env` with your database credentials:
-```
-PORT=5001
-DATABASE_URL=postgresql://yourusername@localhost:5432/url_shortener
-JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
-NODE_ENV=development
-FRONTEND_URL=http://localhost:3000
-BASE_URL=http://localhost:5001
-```
+# 4. Edit .env with your credentials:
+#    PORT=5001
+#    DATABASE_URL=postgresql://yourusername@localhost:5432/url_shortener
+#    JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
+#    NODE_ENV=development
+#    FRONTEND_URL=http://localhost:3000
+#    BASE_URL=http://localhost:5001
 
-5. Start the development server:
-```bash
+# 5. Start development server (port guard enforced)
 npm run dev
 ```
 
-The API will be available at `http://localhost:5001`
+✅ **Backend running on:** `http://localhost:5001`
 
-<!-- GitHub Actions status badge -->
-![CI](https://github.com/Travis-Code/url-shortener/actions/workflows/ci.yml/badge.svg)
+---
 
-### Frontend Setup
+### 🎨 Frontend Setup
 
-1. Navigate to the client directory:
 ```bash
+# 1. Navigate to client directory
 cd client
-```
 
-2. Install dependencies:
-```bash
+# 2. Install dependencies
 npm install
-```
 
-3. Start the development server:
-```bash
+# 3. Start development server (port guard enforced)
 npm run dev
 ```
 
-The application will be available at `http://localhost:3000`.
+✅ **Frontend running on:** `http://localhost:3000`
 
-### Isolation Note
+---
 
-This repository is fully isolated from the prototype. Local services for this project use:
+### 🔒 Port Isolation System
 
-- Frontend: `http://localhost:3000`
-- Backend: `http://localhost:5001`
+This project includes **automatic port guards** to prevent conflicts:
 
-**Automatic port guards** prevent accidental overlap:
-- `npm run dev` (server or client) checks that the required port is free before starting
-- If port is in use, you'll get a clear error with isolation guidance
-- The client proxy in `client/vite.config.ts` points only to `http://localhost:5001`
-- Smoke tests probe only `3000/5001`
+| Component | Port | Protection |
+|-----------|------|-----------|
+| **Frontend** | 3000 | `predev` hook checks availability |
+| **Backend** | 5001 | `predev` hook checks availability |
 
-**If you need both projects running:**
-- Use separate terminals/workspaces
-- Start prototype backend on `5002` and frontend on `3001`
-- To free a port: `lsof -ti:<port> | xargs kill -9`
+**If a port is occupied:**
+- ❌ `npm run dev` exits with an error
+- 💡 Clear instructions guide you to free the port
+- 🔍 Smoke tests validate isolation (`npm run smoke:all`)
 
-## Testing
-
-- Smoke runner: Fast end-to-end sanity check for both server and client.
-
-```zsh
-npm run smoke:all
+**Freeing a port manually:**
+```bash
+lsof -ti:5001 | xargs kill -9  # Kill process on port 5001
 ```
 
-This executes `server/test/smoke.js` (verifies `/api/health`) and `client/test/smoke.js` (verifies core scaffolding). It fails fast if the app cannot start or respond.
+---
 
-## CI Behavior
+## 🧪 Testing & Demo Data
 
-- Workflow: `CI` runs on pushes and PRs to `main`.
-- Steps: Checkout → Node setup → install/build server and client → optional tests → smoke runner (`npm run smoke:all`).
-- Gate: The job name is `build`; branch protection should require this check to pass.
-- Artifacts: No deploy in CI; build steps validate TypeScript and bundle correctness.
+### Seed Demo Content
 
-## Troubleshooting
+Populate the database with demo users and sample URLs:
 
-- Backend not responding:
-   - Ensure `server/.env` has a strong `JWT_SECRET` and correct `DATABASE_URL`.
-   - Check port: `lsof -nP -iTCP:5001 -sTCP:LISTEN` (macOS). Kill stray: `lsof -ti:5001 | xargs kill -9`.
-   - Run health: `curl -s http://localhost:5001/api/health`.
-- Database connection issues:
-   - Create DB: `createdb url_shortener`.
-   - Verify URL: `psql "$DATABASE_URL" -c "\conninfo"`.
-- Frontend build/dev errors:
-   - Clear cache: delete `client/node_modules` and reinstall: `cd client && npm ci`.
-   - Port conflicts: `lsof -ti:3000 | xargs kill -9` then `npm run dev`.
-- TypeScript/Jest complaints in server tests:
-   - Confirm `server/tsconfig.json` includes `types: ["node", "jest"]` and `include: ["src", "test"]`.
-- Smoke runner fails in CI:
-   - Check preceding build logs; server smoke expects `dist` or falls back to ts-node.
-   - Re-run locally: `npm run smoke:all` and inspect console output.
-
-## Common Commands
-
-```zsh
-# Backend (port 5001)
-cd server && npm run dev              # start API in dev (port guard enforced)
-cd server && npm run build            # compile TypeScript
-cd server && npm start                # run compiled server
-cd server && npm run seed             # seed demo data
-cd server && npm run cleanup          # purge expired URLs
-curl -s http://localhost:5001/api/health  # health check
-
-# Frontend (port 3000)
-cd client && npm run dev              # start Vite dev server (port guard enforced)
-cd client && npm run build            # build frontend
-cd client && npm run preview          # preview built app
-
-# Isolation & Testing
-npm run smoke:all                     # run smoke tests (checks 3000/5001 isolation)
-./scripts/check-port.sh 5001 Backend  # manually check if port is free
-
-# Port Management (macOS)
-lsof -ti:5001 | xargs kill -9 2>/dev/null || echo "Port 5001 free"
-lsof -ti:3000 | xargs kill -9 2>/dev/null || echo "Port 3000 free"
-```
-
-### Environment Tips
-
-- Required server env: `JWT_SECRET`, `DATABASE_URL`, `PORT`, `BASE_URL`, `FRONTEND_URL`.
-- Generate a strong secret:
-   ```zsh
-   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-   ```
-- Local database URL example:
-   ```
-   DATABASE_URL=postgresql://$USER@localhost:5432/url_shortener
-   ```
-- Health quick-checks:
-   - Backend: `curl -s http://localhost:5001/api/health`
-   - Frontend dev: visit `http://localhost:3000`
-
-## Local Development
-
-**Currently running locally:**
-- Backend: `http://localhost:5001`
-- Frontend: `http://localhost:3000`
-- Database: PostgreSQL (local `url_shortener` database)
-
-To start the application:
-1. Start backend: `cd server && npm run dev`
-2. Start frontend: `cd client && npm run dev`
-3. Visit `http://localhost:3000` in your browser
-
-## Seed & Test Data
-
-You can populate demo data and run the integration tests to showcase functionality:
-
-**Seed Demo Content**
 ```bash
 cd server
 npm run seed
 ```
-This creates a demo user (email pattern `demo+TIMESTAMP@example.com`, password `password123`) and inserts 5 technology URLs with synthetic click analytics.
 
-**Cleanup Expired URLs**
-```bash
-cd server
-npm run cleanup
-```
-Manually removes all expired URLs from the database. In production, schedule this with cron (e.g., daily at 2am).
+**Demo Accounts:**
+- 👤 Regular User: `user@example.com` / `password123`
+- 🛡️ Admin User: `admin@admin.com` / `admin123`
 
-**Run Backend Tests**
+**Includes:** 5 sample technology URLs with synthetic click analytics for testing.
+
+---
+
+### Run Integration Tests
+
 ```bash
 cd server
 npm test
 ```
-Tests cover signup, login, URL creation, redirect, and analytics. They use the exported Express `app` directly for fast execution.
 
-**One-Liner (from repo root)**
+**Test Coverage:**
+- User signup & login (JWT authentication)
+- URL creation, retrieval, and deletion
+- URL redirection with click tracking
+- Analytics data aggregation
+- Admin-only endpoints
+
+---
+
+### Smoke Tests
+
+Fast end-to-end sanity checks for both server and client:
+
 ```bash
-(cd server && npm run seed && npm test)
+npm run smoke:all
 ```
 
-**Check Last Seeded User**
+**Validates:**
+- ✅ Backend health endpoint (`/api/health`)
+- ✅ Frontend scaffolding (port 3000 reachable)
+- ✅ Port isolation (only probes 3000/5001)
+
+> **Note:** Fails fast if services cannot start or respond.
+
+---
+
+## 🔄 Continuous Integration
+
+**GitHub Actions Workflow:** ![CI](https://github.com/Travis-Code/url-shortener/actions/workflows/ci.yml/badge.svg)
+
+| Stage | Purpose |
+|-------|---------|
+| **Checkout** | Clone repository code |
+| **Node Setup** | Install Node.js 16+ |
+| **Install & Build** | Compile server and client TypeScript |
+| **Smoke Tests** | Validate core functionality (`npm run smoke:all`) |
+
+**Branch Protection:**
+- Job name: `build`
+- Status: Required check for `main` branch
+- No automatic deployment (build validation only)
+
+---
+
+## 🛠️ Troubleshooting
+
+### Backend Issues
+
+| Problem | Solution |
+|---------|----------|
+| **Server not responding** | • Verify `.env` has `JWT_SECRET` and `DATABASE_URL`<br>• Check port: `lsof -nP -iTCP:5001 -sTCP:LISTEN`<br>• Kill process: `lsof -ti:5001 \| xargs kill -9`<br>• Test health: `curl http://localhost:5001/api/health` |
+| **Database connection fails** | • Create DB: `createdb url_shortener`<br>• Verify URL: `psql "$DATABASE_URL" -c "\conninfo"`<br>• Confirm PostgreSQL is running: `pg_isready` |
+| **TypeScript/Jest errors** | • Check `server/tsconfig.json` includes `types: ["node", "jest"]`<br>• Ensure `include: ["src", "test"]` is present |
+
+### Frontend Issues
+
+| Problem | Solution |
+|---------|----------|
+| **Port conflicts** | • Kill process: `lsof -ti:3000 \| xargs kill -9`<br>• Restart: `npm run dev` |
+| **Build errors** | • Clear cache: `rm -rf node_modules && npm ci`<br>• Delete Vite cache: `rm -rf .vite` |
+
+### Testing Issues
+
+| Problem | Solution |
+|---------|----------|
+| **Smoke tests fail** | • Ensure services are running<br>• Check logs: `npm run smoke:all`<br>• Verify ports 3000 and 5001 are reachable |
+| **CI failures** | • Check GitHub Actions logs<br>• Re-run locally: `npm run smoke:all`<br>• Validate TypeScript compilation: `npm run build` |
+
+### Environment Configuration
+
+Generate a strong JWT secret:
 ```bash
-psql "$DATABASE_URL" -c "SELECT email, created_at FROM users ORDER BY id DESC LIMIT 1;"
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
-**Smoke Test (legacy)**
+Verify database URL format:
+```bash
+# Local example:
+DATABASE_URL=postgresql://$USER@localhost:5432/url_shortener
+
+# Test connection:
+psql "$DATABASE_URL" -c "SELECT 1;"
+```
+
+---
+
+## 📋 Common Commands
+
+### Backend (Port 5001)
+
 ```bash
 cd server
-npm run smoke
+
+npm run dev          # Start API in development (port guard enforced)
+npm run build        # Compile TypeScript to dist/
+npm start            # Run compiled server
+npm run seed         # Seed demo data (users + URLs)
+npm run cleanup      # Purge expired URLs
+npm test             # Run integration tests
 ```
 
-## Deployment
+**Health Check:**
+```bash
+curl http://localhost:5001/api/health
+```
 
-### Production Status
+---
 
-🚧 **Backend**: Deployed to Railway (troubleshooting database connection issues)
-- URL: `https://url-shortener-production-c83f.up.railway.app`
-- Status: Currently returning 502 errors, investigating database SSL configuration
-- Database: Railway PostgreSQL with SSL enabled
+### Frontend (Port 3000)
 
-⏳ **Frontend**: Not yet deployed (pending backend stability)
-- Target: Vercel or Netlify
-- Will connect to Railway backend once stable
+```bash
+cd client
 
-🟢 **Local Development**: Fully functional
-- Backend: `http://localhost:5001`
-- Frontend: `http://localhost:3000`
-- Database: Local PostgreSQL
+npm run dev          # Start Vite dev server (port guard enforced)
+npm run build        # Build for production
+npm run preview      # Preview production build locally
+```
 
-### Deployment Configuration
+---
+
+### Testing & Isolation
+
+```bash
+# Run smoke tests (validates 3000/5001 isolation)
+npm run smoke:all
+
+# Manually check if port is free
+./scripts/check-port.sh 5001 Backend
+
+# Kill process on specific port (macOS)
+lsof -ti:5001 | xargs kill -9 2>/dev/null || echo "Port 5001 free"
+lsof -ti:3000 | xargs kill -9 2>/dev/null || echo "Port 3000 free"
+```
+
+---
+
+---
+
+## 🚀 Deployment Guide
+
+### Current Status
+
+| Component | Status | Details |
+|-----------|--------|---------|
+| **🟢 Local Development** | Fully functional | Backend: `localhost:5001`<br>Frontend: `localhost:3000`<br>Database: Local PostgreSQL |
+| **⏳ Production** | Ready to deploy | Configuration complete, pending deployment |
+
+---
+
+### Backend Deployment (Railway)
+
+**Recommended Platform:** [Railway](https://railway.app)
+
+```bash
+# 1. Create new project on Railway
+# 2. Add PostgreSQL plugin (auto-provisions database with SSL)
+# 3. Connect GitHub repository
+```
+
+**Build Configuration:**
+```json
+{
+  "buildCommand": "npm install && npm run build",
+  "startCommand": "npm start"
+}
+```
+
+**Environment Variables:**
+```bash
+DATABASE_URL=<auto-provided by Railway PostgreSQL plugin>
+JWT_SECRET=<generate with: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))">
+NODE_ENV=production
+FRONTEND_URL=<your frontend URL after deployment>
+BASE_URL=<Railway-provided backend URL>
+PORT=5001
+```
+
+> **Note:** Railway automatically appends `?sslmode=require` to `DATABASE_URL`. The backend conditionally enables SSL in production.
+
+---
+
+### Frontend Deployment (Vercel)
+
+**Recommended Platform:** [Vercel](https://vercel.com)
+
+```bash
+# 1. Import project from GitHub
+# 2. Framework Preset: Vite
+# 3. Root Directory: client
+```
+
+**Build Configuration:**
+```json
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install"
+}
+```
+
+**Environment Variables:**
+```bash
+VITE_API_URL=<your Railway backend URL>
+```
+
+---
+
+### Deployment Checklist
 
 **Backend (Railway):**
-- Repository: Connected to GitHub `Travis-Code/url-shortener`
-- Service: Node.js with PostgreSQL plugin
-- Build Command: `npm install && npm run build`
-- Start Command: `npm start`
-- Environment Variables:
-  - `DATABASE_URL` - Provided by Railway PostgreSQL plugin with `?sslmode=require`
-  - `JWT_SECRET` - 256-bit cryptographic random string
-  - `NODE_ENV=production`
-  - `FRONTEND_URL` - Set to frontend URL once deployed
-  - `BASE_URL` - Railway-provided URL
+- [ ] PostgreSQL plugin added
+- [ ] GitHub repository connected
+- [ ] Environment variables configured
+- [ ] Build commands set
+- [ ] Initial deployment successful
+- [ ] Health check passing: `curl https://your-backend.railway.app/api/health`
 
-**Frontend (Pending):**
-- Platform: Vercel or Netlify (TBD)
-- Build Command: `npm run build`
-- Output Directory: `dist`
-- Environment Variables:
-  - `VITE_API_URL` - Railway backend URL
-
-### CI/CD Pipeline
-
-This project uses GitHub Actions for continuous integration:
-
-- **Workflow File**: `.github/workflows/ci.yml`
-- **Trigger**: Push or PR to `main` branch
-- **Steps**:
-  1. Checkout code
-  2. Set up Node.js 18
-  3. Install dependencies (server + client)
-  4. Build both applications
-  5. Run integration tests (local only)
-  6. Execute smoke tests
-
-**Current Status**: ✅ Passing (remote integration tests temporarily disabled)
-
-**Note**: Remote integration tests against Railway backend are currently skipped in CI due to 502 errors. They will be re-enabled once the production backend is stable.
-
-### Troubleshooting Production Deployment
-
-**Known Issues:**
-
-1. **Railway Backend 502 Errors**
-   - Symptom: All API endpoints returning 502 Bad Gateway
-   - Suspected Cause: Database connection SSL configuration or Railway internal networking
-   - Investigation Steps:
-     - Check Railway dashboard logs for specific errors
-     - Verify DATABASE_URL includes `?sslmode=require`
-     - Confirm all environment variables are set
-     - Test database connection from Railway shell
-
-2. **Database SSL Configuration**
-   - Code includes conditional SSL logic (production only)
-   - Railway requires `sslmode=require` in connection string
-   - Local development works without SSL
-
-**Deployment Checklist:**
-
-Backend (Railway):
-- [x] Repository connected to GitHub
-- [x] PostgreSQL plugin added
-- [x] Environment variables configured
-- [x] Build and start commands set
-- [x] Initial deployment completed
-- [ ] Health endpoint responding successfully
-- [ ] Database connection working
-- [ ] API endpoints returning expected responses
-
-Frontend (Vercel/Netlify):
+**Frontend (Vercel):**
 - [ ] Repository imported
 - [ ] Build settings configured
-- [ ] Environment variables set (`VITE_API_URL`)
-- [ ] Domain configured
+- [ ] `VITE_API_URL` environment variable set
 - [ ] Deployment successful
-- [ ] Application loads and connects to backend
+- [ ] Application loads without errors
 
-Testing & Validation:
-- [x] Local integration tests passing
-- [x] CI pipeline passing (with remote tests skipped)
-- [ ] Production health check successful
-- [ ] Remote integration tests re-enabled and passing
-- [ ] Full user flow tested in production
-- [ ] Analytics tracking verified in production
+**Validation:**
+- [ ] User signup/login flow works
+- [ ] URL creation and redirection functional
+- [ ] Analytics tracking working
+- [ ] Admin dashboard accessible (for admin users)
 
-### Next Steps
+---
 
-1. **Fix Railway Backend**
-   - Access Railway dashboard to view deployment logs
-   - Identify specific database connection error
-   - Test connection using Railway shell or SQL console
-   - Verify SSL configuration is applied correctly
-   - Redeploy if necessary
+### Post-Deployment
 
-2. **Re-enable Remote Tests**
-   - Once backend is healthy, update `.github/workflows/ci.yml`
-   - Remove `--testPathIgnorePatterns=integration.remote.test.ts`
-   - Verify all remote integration tests pass
+**Update README with live demo links:**
+```markdown
+## 🌐 Live Demo
 
-3. **Deploy Frontend**
-   - Choose platform (Vercel recommended)
-   - Configure build settings
-   - Set `VITE_API_URL` to Railway backend URL
-   - Test full user flow in production
+- **Frontend:** https://your-app.vercel.app
+- **Backend API:** https://your-backend.railway.app
+- **Admin Panel:** https://your-app.vercel.app/admin
+```
 
-4. **Final Validation**
-   - Complete end-to-end testing
-   - Verify analytics tracking
-   - Test all user flows
-   - Update README with live demo links
+**Test Production Environment:**
+```bash
+# Health check
+curl https://your-backend.railway.app/api/health
 
-## API Endpoints
+# Test authentication
+curl -X POST https://your-backend.railway.app/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@admin.com","password":"admin123"}'
+```
 
-### Authentication
+---
 
-- `POST /api/auth/signup` - Create a new account
-- `POST /api/auth/login` - Log in to existing account
+## 📡 API Documentation
 
-### URLs
+### 🔐 Authentication
 
-- `POST /api/urls/create` - Create a short URL (requires auth)
-- `GET /api/urls` - Get user's short URLs (requires auth)
-- `GET /api/urls/:id/analytics` - Get analytics for a URL (requires auth)
-- `DELETE /api/urls/:id` - Delete a URL (requires auth)
-- `GET /:shortCode` - Redirect to original URL
+| Endpoint | Method | Description | Auth Required |
+|----------|--------|-------------|---------------|
+| `/api/auth/signup` | POST | Create new account | ❌ |
+| `/api/auth/login` | POST | Log in to existing account | ❌ |
 
-### Admin (requires admin role)
+**Example: Login**
+```bash
+curl -X POST http://localhost:5001/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "password": "password123"
+  }'
+```
 
-- `GET /api/admin/stats` - System-wide statistics
-- `GET /api/admin/users` - List all users with metrics
-- `GET /api/admin/urls` - List all URLs in system
-- `GET /api/admin/clicks` - All click analytics with filters
-- `DELETE /api/admin/urls/:id` - Delete any URL
-- `POST /api/admin/users/:id/ban` - Ban/unban a user
+**Response:**
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": 1,
+    "email": "user@example.com",
+    "isAdmin": false
+  }
+}
+```
 
-### Health Check
+---
 
-- `GET /api/health` - API health status
-- `GET /api/diagnostics` - System diagnostics
+### 🔗 URL Management
 
-## Request/Response Examples
+| Endpoint | Method | Description | Auth Required |
+|----------|--------|-------------|---------------|
+| `/api/urls/create` | POST | Create short URL | ✅ |
+| `/api/urls` | GET | Get user's short URLs | ✅ |
+| `/api/urls/:id/analytics` | GET | Get analytics for URL | ✅ |
+| `/api/urls/:id` | DELETE | Delete URL | ✅ |
+| `/:shortCode` | GET | Redirect to original URL | ❌ |
 
-### Create Short URL
-
-**Request:**
+**Example: Create Short URL**
 ```bash
 curl -X POST http://localhost:5001/api/urls/create \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-    "originalUrl": "https://example.com/very/long/url",
-    "title": "My Link",
-    "description": "Description of the link"
+    "originalUrl": "https://github.com/yourusername/yourproject",
+    "title": "My GitHub Project",
+    "description": "Check out my awesome project"
   }'
 ```
 
@@ -573,103 +634,170 @@ curl -X POST http://localhost:5001/api/urls/create \
   "id": 1,
   "shortCode": "abc1234",
   "shortUrl": "http://localhost:5001/abc1234",
-  "originalUrl": "https://example.com/very/long/url",
+  "originalUrl": "https://github.com/yourusername/yourproject",
+  "title": "My GitHub Project",
+  "description": "Check out my awesome project",
+  "clickCount": 0,
   "createdAt": "2024-01-01T12:00:00Z"
 }
 ```
 
-## Development
+---
 
-### Running Tests
+### 🛡️ Admin Endpoints
 
+| Endpoint | Method | Description | Auth Required |
+|----------|--------|-------------|---------------|
+| `/api/admin/stats` | GET | System-wide statistics | ✅ Admin |
+| `/api/admin/users` | GET | List all users with metrics | ✅ Admin |
+| `/api/admin/urls` | GET | List all URLs in system | ✅ Admin |
+| `/api/admin/clicks` | GET | All click analytics with filters | ✅ Admin |
+| `/api/admin/urls/:id` | DELETE | Delete any URL | ✅ Admin |
+| `/api/admin/users/:id/ban` | POST | Ban/unban user | ✅ Admin |
+
+**Example: System Statistics**
 ```bash
-# Backend
-cd server
-npm test
-
-# Frontend
-cd client
-npm test
+curl http://localhost:5001/api/admin/stats \
+  -H "Authorization: Bearer ADMIN_TOKEN"
 ```
 
-### Building for Production
-
-```bash
-# Backend
-cd server
-npm run build
-
-# Frontend
-cd client
-npm run build
+**Response:**
+```json
+{
+  "totalUsers": 42,
+  "totalUrls": 156,
+  "totalClicks": 3429,
+  "activeUrls": 142,
+  "expiredUrls": 14
+}
 ```
 
-## Deployment
+---
 
-### Backend Deployment (Railway, Heroku, etc.)
+### 🩺 Health & Diagnostics
 
-1. Set up environment variables on your hosting platform
-2. Push to git repository
-3. Connect repository to deployment service
-4. Deploy with `npm run build && npm start`
+| Endpoint | Method | Description | Auth Required |
+|----------|--------|-------------|---------------|
+| `/api/health` | GET | API health status | ❌ |
+| `/api/diagnostics` | GET | System diagnostics | ❌ |
 
-### Frontend Deployment (Vercel, Netlify, etc.)
+**Example: Health Check**
+```bash
+curl http://localhost:5001/api/health
+```
 
-1. Build the project: `npm run build`
-2. Deploy the `dist` folder to your hosting service
+**Response:**
+```json
+{
+  "status": "healthy",
+  "timestamp": "2024-01-01T12:00:00Z",
+  "uptime": 3600,
+  "database": "connected"
+}
+```
 
-## Admin Access
+---
 
-The system includes a role-based admin dashboard. To create an admin user:
+## 🛡️ Admin Access
 
-1. Run the admin migration:
+### Default Admin Account
+
+After running `npm run seed`, use these credentials:
+
+```
+Email: admin@admin.com
+Password: admin123
+```
+
+**Admin Dashboard:** `http://localhost:3000/admin`
+
+---
+
+### Creating Additional Admin Users
+
+**Option 1: Update Existing User**
+```bash
+psql url_shortener -c "UPDATE users SET is_admin = true WHERE email = 'user@example.com';"
+```
+
+**Option 2: Run Admin Migration**
 ```bash
 cd server
 npx ts-node src/db/migrations/add_admin_role.ts
 ```
 
-2. Create an admin account:
-```sql
-psql url_shortener
-UPDATE users SET is_admin = true WHERE email = 'your-email@example.com';
-```
+---
 
-Or use the seeded demo admin:
-- Email: `admin@example.com`
-- Password: `password123`
+### Admin Capabilities
 
-Admin dashboard available at: `http://localhost:3000/admin`
-
-## Next Steps to Enhance
-
-1. **Email Verification** - Verify email on signup
-2. **Password Reset** - Allow users to reset forgotten passwords
-3. **Custom Short Codes** - Let users choose their own short codes
-4. ✅ **Link Expiration** - Auto-delete links after expiration date (DONE)
-5. ✅ **Advanced Analytics** - Charts, location tracking, device analytics (DONE)
-6. ✅ **Rate Limiting** - Prevent abuse of URL creation (DONE)
-7. **Link Sharing** - Generate QR codes, social media share buttons
-8. ✅ **Admin Dashboard** - Monitor all users and links (DONE)
-9. **API Documentation** - Swagger/OpenAPI docs
-10. **Testing** - Unit tests, integration tests, E2E tests
-11. **Real-time Dashboard** - WebSocket live updates
-12. **Export Reports** - CSV/PDF analytics exports
-13. **Custom Domains** - Allow users to use their own domains
-
-## Contributing
-
-1. Create a feature branch
-2. Make your changes
-3. Submit a pull request
-
-## License
-
-MIT
-
-## Author
-
-Your Name
+- 📊 View system-wide statistics
+- 👥 Manage all users
+- 🔗 View and delete any URL
+- 📈 Access comprehensive click analytics
+- 🚫 Ban/unban users
 
 ---
 
-**Ready to deploy?** Check out deployment guides for [Vercel](https://vercel.com), [Railway](https://railway.app), [Netlify](https://netlify.com), and [Heroku](https://heroku.com).
+## 🗺️ Roadmap
+
+### ✅ Completed Features
+
+- ✅ JWT authentication with role-based access control
+- ✅ URL expiration and automatic cleanup
+- ✅ Advanced analytics (geolocation, device tracking, browser/OS detection)
+- ✅ Rate limiting (5 attempts per 15 minutes)
+- ✅ Admin dashboard with system-wide monitoring
+- ✅ Port isolation system for development
+- ✅ Comprehensive integration tests
+- ✅ CI/CD pipeline with GitHub Actions
+
+### 🚧 Potential Enhancements
+
+| Feature | Priority | Description |
+|---------|----------|-------------|
+| **Email Verification** | High | Verify email addresses on signup |
+| **Password Reset** | High | Allow users to reset forgotten passwords |
+| **Custom Short Codes** | Medium | User-defined short codes (currently admin-only) |
+| **QR Code Generation** | Medium | Auto-generate QR codes for short URLs |
+| **OpenAPI Documentation** | Medium | Swagger UI for API exploration |
+| **Real-time Dashboard** | Low | WebSocket-based live analytics updates |
+| **Export Reports** | Low | CSV/PDF analytics exports |
+| **Custom Domains** | Low | Allow users to use their own domains |
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! To contribute:
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'feat: add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
+
+**Commit Convention:** This project follows [Conventional Commits](https://www.conventionalcommits.org/)
+
+---
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+---
+
+## 👨‍💻 Author
+
+**Built by:** [Your Name](https://github.com/yourusername)
+
+**Repository:** [github.com/Travis-Code/url-shortener](https://github.com/Travis-Code/url-shortener)
+
+---
+
+<div align="center">
+
+**⭐ Star this repo if you find it helpful!**
+
+Ready to deploy? → [Vercel](https://vercel.com) | [Railway](https://railway.app) | [Netlify](https://netlify.com)
+
+</div>
