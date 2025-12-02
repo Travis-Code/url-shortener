@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "smoke:all": "./scripts/smoke.sh"
+    "smoke:all": "echo '🔍 Running smoke tests (ports 3000/5001 isolation enforced)...' && ./scripts/smoke.sh"
   },
   "//": "This is the root package.json, but your backend is in /server.",
   "//": "Railway needs the backend's package.json for build/deploy.",

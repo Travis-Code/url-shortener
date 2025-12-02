@@ -4,6 +4,7 @@
   "description": "Backend API for URL Shortener application",
   "main": "dist/index.js",
   "scripts": {
+    "predev": "../scripts/check-port.sh 5001 'Backend Server'",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",

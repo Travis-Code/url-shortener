@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "predev": "../scripts/check-port.sh 3000 'Frontend Server'",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",

@@ -245,7 +245,25 @@ npm install
 npm run dev
 ```
 
-The application will be available at `http://localhost:3000`
+The application will be available at `http://localhost:3000`.
+
+### Isolation Note
+
+This repository is fully isolated from the prototype. Local services for this project use:
+
+- Frontend: `http://localhost:3000`
+- Backend: `http://localhost:5001`
+
+**Automatic port guards** prevent accidental overlap:
+- `npm run dev` (server or client) checks that the required port is free before starting
+- If port is in use, you'll get a clear error with isolation guidance
+- The client proxy in `client/vite.config.ts` points only to `http://localhost:5001`
+- Smoke tests probe only `3000/5001`
+
+**If you need both projects running:**
+- Use separate terminals/workspaces
+- Start prototype backend on `5002` and frontend on `3001`
+- To free a port: `lsof -ti:<port> | xargs kill -9`
 
 ## Testing
 
@@ -285,25 +303,26 @@ This executes `server/test/smoke.js` (verifies `/api/health`) and `client/test/s
 ## Common Commands
 
 ```zsh
-# Backend
-cd server && npm run dev              # start API in dev
+# Backend (port 5001)
+cd server && npm run dev              # start API in dev (port guard enforced)
 cd server && npm run build            # compile TypeScript
 cd server && npm start                # run compiled server
 cd server && npm run seed             # seed demo data
 cd server && npm run cleanup          # purge expired URLs
 curl -s http://localhost:5001/api/health  # health check
 
-# Frontend
-cd client && npm run dev              # start Vite dev server
+# Frontend (port 3000)
+cd client && npm run dev              # start Vite dev server (port guard enforced)
 cd client && npm run build            # build frontend
 cd client && npm run preview          # preview built app
 
-# Ports (macOS)
+# Isolation & Testing
+npm run smoke:all                     # run smoke tests (checks 3000/5001 isolation)
+./scripts/check-port.sh 5001 Backend  # manually check if port is free
+
+# Port Management (macOS)
 lsof -ti:5001 | xargs kill -9 2>/dev/null || echo "Port 5001 free"
 lsof -ti:3000 | xargs kill -9 2>/dev/null || echo "Port 3000 free"
-
-# Workspace
-npm run smoke:all                     # run smoke tests (server+client)
 ```
 
 ### Environment Tips

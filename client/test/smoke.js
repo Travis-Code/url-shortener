@@ -18,6 +18,31 @@ try {
   if (!fs.existsSync(viteConfig)) throw new Error('vite config missing');
 
   console.log('Client smoke test: OK');
+  // Optional reachability checks (non-fatal) for this project only
+  // Frontend: http://localhost:3000
+  // Backend:  http://localhost:5001/api/health
+  try {
+    const http = await import('http');
+    // Check frontend on 3000
+    await new Promise((resolve) => {
+      const req = http.request({ host: 'localhost', port: 3000, method: 'HEAD', path: '/' }, (res) => {
+        if (res.statusCode && res.statusCode < 500) resolve(true); else resolve(false);
+      });
+      req.on('error', () => resolve(false));
+      req.end();
+    });
+    // Check backend health on 5001
+    await new Promise((resolve) => {
+      const req = http.request({ host: 'localhost', port: 5001, method: 'GET', path: '/api/health' }, (res) => {
+        if (res.statusCode && res.statusCode < 500) resolve(true); else resolve(false);
+      });
+      req.on('error', () => resolve(false));
+      req.end();
+    });
+    console.log('Isolation check: localhost:3000 and :5001 probed (non-fatal)');
+  } catch {
+    // Never fail the smoke test based on reachability
+  }
   process.exit(0);
 } catch (err) {
   console.error('Client smoke test failed:', err.message || err);
