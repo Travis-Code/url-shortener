@@ -58,7 +58,7 @@ Capture tips:
 
 The app is live and ready to share.
 
-- Frontend (Vercel): https://client-git-main-boom-codes-projects.vercel.app
+- Frontend (Vercel): https://client-2stkryi8y-boom-codes-projects.vercel.app
 - Backend (Railway API): https://url-shortener-production-c83f.up.railway.app
 - Example Short Link: https://url-shortener-production-c83f.up.railway.app/atefawef
 
@@ -110,7 +110,7 @@ This project demonstrates end-to-end, production-grade engineering:
 - Deployment: Frontend on Vercel; Backend + DB on Railway
 
 Live Links:
-- App: https://client-git-main-boom-codes-projects.vercel.app
+- App: https://client-2stkryi8y-boom-codes-projects.vercel.app
 - API/Short Links: https://url-shortener-production-c83f.up.railway.app
 
 Talking points:
@@ -397,7 +397,7 @@ Note: Production deployments should not have default credentials. Use your own a
 
 Follow these steps to demo the app end-to-end:
 
-1. Open the frontend: `https://client-git-main-boom-codes-projects.vercel.app`
+1. Open the frontend: `https://client-2stkryi8y-boom-codes-projects.vercel.app`
 2. Sign up or log in
   - Create a new account, or use your existing admin account
 3. Create a short URL
