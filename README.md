@@ -38,21 +38,17 @@ Transform long URLs into short, trackable links with powerful analytics. Built w
 
 ## 📸 Screenshots
 
-Add a few real screenshots to make the repo pop:
+### Landing Page
+<img src="docs/screenshots/home.png" alt="Landing Page" width="800" />
 
-- Login Page: `docs/screenshots/login.png`
-- Dashboard: `docs/screenshots/dashboard.png`
-- Analytics: `docs/screenshots/analytics.png`
-- Admin Panel: `docs/screenshots/admin.png`
-
-Embed examples:
-
+### Dashboard - Create & Manage URLs
 <img src="docs/screenshots/dashboard.png" alt="Dashboard" width="800" />
 
-Capture tips:
-- Use production URLs and a clean demo account
-- Include one short link with clicks so charts render
-- Light mode is fine; ensure top nav shows username
+### Admin Analytics - Click Tracking & Insights
+<img src="docs/screenshots/analytics.png" alt="Analytics Dashboard" width="800" />
+
+### Admin Panel - System Overview
+<img src="docs/screenshots/admin.png" alt="Admin Panel" width="800" />
 
 ## 🚀 Live Demo
 
