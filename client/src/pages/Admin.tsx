@@ -750,6 +750,13 @@ const Admin: React.FC = () => {
                           <div>
                             <div className="text-sm text-gray-900 font-medium">{click.browser || 'Unknown'}</div>
                             <div className="text-xs text-gray-500">{click.os || 'Unknown'}</div>
+                            {click.user_agent && (click.user_agent.toLowerCase().includes('curl') || 
+                              click.user_agent.toLowerCase().includes('bot') || 
+                              click.user_agent.toLowerCase().includes('crawler')) && (
+                              <span className="inline-flex mt-1 px-1.5 py-0.5 text-xs font-semibold rounded bg-gray-100 text-gray-600">
+                                Bot/Test
+                              </span>
+                            )}
                           </div>
                         </div>
                       </td>
