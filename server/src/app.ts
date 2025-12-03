@@ -27,7 +27,14 @@ app.use(express.json({ limit: '10mb' })); // Limit payload size
 app.use(
   cors({
     origin: process.env.NODE_ENV === 'production' 
-      ? process.env.FRONTEND_URL 
+      ? (origin, callback) => {
+          // Allow all Vercel preview deployments for this project
+          if (!origin || origin.match(/^https:\/\/client-[a-z0-9]+-boom-codes-projects\.vercel\.app$/)) {
+            callback(null, true);
+          } else {
+            callback(new Error('Not allowed by CORS'));
+          }
+        }
       : ['http://localhost:3000', 'http://localhost:5173'],
     credentials: true,
   })
