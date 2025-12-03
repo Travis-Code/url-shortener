@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Production API URL - direct call to Railway backend
 const API_URL = import.meta.env.VITE_API_URL || 
-  (window.location.hostname === 'client-boom-codes-projects.vercel.app' 
+  (window.location.protocol === 'https:'
     ? 'https://url-shortener-production-c83f.up.railway.app'
     : 'http://localhost:5001');
 
