@@ -28,8 +28,10 @@ app.use(
   cors({
     origin: process.env.NODE_ENV === 'production' 
       ? (origin, callback) => {
-          // Allow all Vercel preview deployments for this project
-          if (!origin || origin.match(/^https:\/\/client-[a-z0-9]+-boom-codes-projects\.vercel\.app$/)) {
+          // Allow production domain and all Vercel preview deployments for this project
+          if (!origin || 
+              origin === 'https://client-six-peach-15.vercel.app' ||
+              origin.match(/^https:\/\/client-[a-z0-9\-]+-boom-codes-projects\.vercel\.app$/)) {
             callback(null, true);
           } else {
             callback(new Error('Not allowed by CORS'));
