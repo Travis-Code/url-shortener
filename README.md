@@ -12,7 +12,7 @@
 
 **A modern, enterprise-grade URL shortening platform with comprehensive analytics, user authentication, and admin controls.**
 
-[Features](#-features) • [Quick Start](#-quick-start) • [Tech Stack](#-tech-stack) • [API](#-api-endpoints) • [Architecture](#-project-architecture)
+[Live Demo](https://client-six-peach-15.vercel.app) • [About](https://client-six-peach-15.vercel.app/about) • [Features](#-features) • [Quick Start](#-quick-start) • [Tech Stack](#-tech-stack) • [API](#-api-endpoints)
 
 </div>
 
@@ -54,7 +54,7 @@ Transform long URLs into short, trackable links with powerful analytics. Built w
 
 The app is live and ready to share.
 
-- Frontend (Vercel): https://client-2stkryi8y-boom-codes-projects.vercel.app
+- Frontend (Vercel): https://client-six-peach-15.vercel.app
 - Backend (Railway API): https://url-shortener-production-c83f.up.railway.app
 - Example Short Link: https://url-shortener-production-c83f.up.railway.app/atefawef
 
@@ -106,7 +106,7 @@ This project demonstrates end-to-end, production-grade engineering:
 - Deployment: Frontend on Vercel; Backend + DB on Railway
 
 Live Links:
-- App: https://client-2stkryi8y-boom-codes-projects.vercel.app
+- App: https://client-six-peach-15.vercel.app
 - API/Short Links: https://url-shortener-production-c83f.up.railway.app
 
 Talking points:
@@ -393,7 +393,7 @@ Note: Production deployments should not have default credentials. Use your own a
 
 Follow these steps to demo the app end-to-end:
 
-1. Open the frontend: `https://client-2stkryi8y-boom-codes-projects.vercel.app`
+1. Open the frontend: `https://client-six-peach-15.vercel.app`
 2. Sign up or log in
   - Create a new account, or use your existing admin account
 3. Create a short URL
