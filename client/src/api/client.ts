@@ -1,8 +1,9 @@
 import axios from 'axios';
 
 // Production API URL - direct call to Railway backend
+// Use environment variable if available, otherwise use Railway in production or localhost in dev
 const API_URL = import.meta.env.VITE_API_URL || 
-  (window.location.protocol === 'https:'
+  (import.meta.env.MODE === 'production'
     ? 'https://url-shortener-production-c83f.up.railway.app'
     : 'http://localhost:5001');
 
