@@ -1,5 +1,6 @@
 import pool from './pool';
 import { increaseShortCodeLength } from './migrations/increase_shortcode_length';
+import addBannedIpsTable from './migrations/add_banned_ips';
 
 export const initializeDatabase = async () => {
   const queries = [
@@ -49,6 +50,9 @@ export const initializeDatabase = async () => {
     
     // Run migration to increase short_code length if needed
     await increaseShortCodeLength();
+    
+      // Run migration to add banned_ips table
+      await addBannedIpsTable();
     
     console.log('✓ Database initialized successfully');
   } catch (err) {

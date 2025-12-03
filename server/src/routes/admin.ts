@@ -167,13 +167,36 @@ router.patch('/users/:id/ban', async (req: AuthRequest, res: Response) => {
       return res.status(400).json({ error: 'Cannot ban yourself' });
     }
 
-    // For now, we'll add a banned column. Let's add it via migration if needed
-    // For simplicity, we'll just delete their URLs as a "ban"
     if (banned) {
+      // Get all IPs this user has used (from clicks table)
+      const ipResult = await pool.query(
+        'SELECT DISTINCT ip_address FROM clicks WHERE url_id IN (SELECT id FROM urls WHERE user_id = $1)',
+        [id]
+      );
+      
+      // Ban all their IPs
+      for (const row of ipResult.rows) {
+        if (row.ip_address && row.ip_address !== 'unknown') {
+          await pool.query(
+            'INSERT INTO banned_ips (ip_address, reason, banned_by) VALUES ($1, $2, $3) ON CONFLICT (ip_address) DO NOTHING',
+            [row.ip_address, `User ID ${id} banned by admin`, req.userId]
+          );
+        }
+      }
+      
+      // Delete all their URLs
       await pool.query('DELETE FROM urls WHERE user_id = $1', [id]);
-      res.json({ message: 'User banned - all URLs deleted' });
+      res.json({ 
+        message: 'User banned - all URLs deleted and IP addresses blocked',
+        ips_banned: ipResult.rows.length 
+      });
     } else {
-      res.json({ message: 'User unbanned' });
+      // Unban: remove IPs from banned list
+      await pool.query(
+        'DELETE FROM banned_ips WHERE reason LIKE $1',
+        [`User ID ${id} banned by admin`]
+      );
+      res.json({ message: 'User unbanned - IP blocks removed' });
     }
   } catch (err) {
     console.error('Error banning user:', err);

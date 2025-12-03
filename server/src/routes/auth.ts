@@ -17,9 +17,35 @@ const authLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+// More restrictive rate limiting for signup (3 signups per hour per IP)
+const signupLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 3, // Limit each IP to 3 signups per hour
+  message: 'Too many accounts created from this IP, please try again later',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Helper function to get client IP
+const getClientIp = (req: Request): string => {
+  return (
+    (req.headers['x-forwarded-for'] as string | undefined)?.split(',')[0] ||
+    req.socket.remoteAddress ||
+    'unknown'
+  );
+};
+
 // SIGNUP
-router.post('/signup', authLimiter, async (req: Request, res: Response, next: NextFunction) => {
+router.post('/signup', signupLimiter, async (req: Request, res: Response, next: NextFunction) => {
   try {
+    // Check if IP is banned
+    const clientIp = getClientIp(req);
+    const bannedCheck = await pool.query('SELECT id FROM banned_ips WHERE ip_address = $1', [clientIp]);
+    
+    if (bannedCheck.rows.length > 0) {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+
     let { username, email, password } = req.body;
 
     if (!username || !email || !password) {
