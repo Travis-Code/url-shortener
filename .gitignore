@@ -14,3 +14,7 @@ yarn-error.log*
 *.swp
 *.swo
 CI_GUIDE.md
+
+# Admin scripts with credentials
+server/src/scripts/createAdminProduction.ts
+server/src/scripts/promoteAdmin.ts
