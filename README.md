@@ -71,7 +71,9 @@ Tip: If you see `localhost` in any link preview, refresh the page — the UI now
 ### 🔐 Authentication & Security
 - JWT-based authentication
 - Bcrypt password hashing
-- Rate limiting (5 attempts/15min)
+- Rate limiting (signup: 3/hour, login: 5/15min)
+- IP blocking for banned users
+- Account ban system with admin controls
 - XSS input sanitization
 - Helmet.js security headers
 - CORS protection
