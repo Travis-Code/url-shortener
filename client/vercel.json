@@ -1,14 +1,6 @@
 {
   "rewrites": [
     { 
-      "source": "/api/:path*", 
-      "destination": "https://url-shortener-production-c83f.up.railway.app/api/:path*" 
-    },
-    { 
-      "source": "/:shortcode", 
-      "destination": "https://url-shortener-production-c83f.up.railway.app/:shortcode" 
-    },
-    { 
       "source": "/(.*)", 
       "destination": "/index.html" 
     }
