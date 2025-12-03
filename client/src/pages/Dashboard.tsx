@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { urlApi } from '../api/client';
 import { useAuth } from '../utils/authContext';
 
+// Get the base URL for shortened links from environment or use production Railway URL
+const BASE_URL = import.meta.env.VITE_BASE_URL || 'https://url-shortener-production-c83f.up.railway.app';
+
 interface URL {
   id: number;
   short_code: string;
@@ -228,7 +231,7 @@ const Dashboard: React.FC = () => {
                     <tr key={url.id} className="border-b border-gray-200 hover:bg-gray-50">
                       <td className="px-6 py-4 text-sm font-medium text-blue-600">
                         <button
-                          onClick={() => copyToClipboard(`http://localhost:5001/${url.short_code}`)}
+                          onClick={() => copyToClipboard(`${BASE_URL}/${url.short_code}`)}
                           className="hover:underline"
                         >
                           {url.short_code}
