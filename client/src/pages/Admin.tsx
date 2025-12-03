@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { adminApi } from '../api/client';
 
+// Get the base URL for shortened links from environment or use production Railway URL
+const BASE_URL = import.meta.env.VITE_BASE_URL || 'https://url-shortener-production-c83f.up.railway.app';
+
 interface Stats {
   totalUsers: number;
   totalUrls: number;
@@ -395,7 +398,7 @@ const Admin: React.FC = () => {
                 <tr key={url.id} className="border-b border-gray-200 hover:bg-gray-50">
                   <td className="px-6 py-4 text-sm font-mono">
                     <a 
-                      href={`http://localhost:5001/${url.short_code}`}
+                      href={`${BASE_URL}/${url.short_code}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-600 hover:text-blue-800 hover:underline"
@@ -667,7 +670,7 @@ const Admin: React.FC = () => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <a
-                              href={`http://localhost:5001/${shortCode}`}
+                              href={`${BASE_URL}/${shortCode}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-sm font-mono text-blue-600 hover:text-blue-800 hover:underline"
@@ -727,7 +730,7 @@ const Admin: React.FC = () => {
                       </td>
                       <td className="px-6 py-4">
                         <a 
-                          href={`http://localhost:5001/${click.short_code}`}
+                          href={`${BASE_URL}/${click.short_code}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-sm font-mono text-blue-600 hover:text-blue-800 hover:underline"
