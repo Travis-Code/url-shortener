@@ -102,6 +102,16 @@ Automatically applied by helmet middleware:
 ## 🚨 Known Limitations
 
 1. **No Refresh Tokens**: Tokens expire after 7 days, requiring re-login
+
+---
+
+## 🔑 Secrets Policy
+
+- No plaintext secrets (passwords, API keys, JWT secrets) in code, tests, or docs.
+- Use environment variables and `.env` files; examples live in `server/.env.example` and `client/.env.example`.
+- `.gitignore` excludes `.env*` files and sensitive admin scripts.
+- Rotate production `JWT_SECRET` regularly; generate via `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` and store only in your platform’s env vars (Railway/Vercel).
+- Never publish real credentials in commits or README; use placeholders.
 2. **IP-Based Rate Limiting**: Can be bypassed with VPNs/proxies
 3. **No Email Verification**: Users can sign up with any email
 4. **No 2FA**: Single-factor authentication only

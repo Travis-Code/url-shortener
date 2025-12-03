@@ -38,18 +38,31 @@ Transform long URLs into short, trackable links with powerful analytics. Built w
 
 ## 📸 Screenshots
 
-> *Add screenshots here after deployment*
+Add a few real screenshots to make the repo pop:
 
-```
-[Login Page] [Dashboard] [Analytics] [Admin Panel]
-```
+- Login Page: `docs/screenshots/login.png`
+- Dashboard: `docs/screenshots/dashboard.png`
+- Analytics: `docs/screenshots/analytics.png`
+- Admin Panel: `docs/screenshots/admin.png`
+
+Embed examples:
+
+<img src="docs/screenshots/dashboard.png" alt="Dashboard" width="800" />
+
+Capture tips:
+- Use production URLs and a clean demo account
+- Include one short link with clicks so charts render
+- Light mode is fine; ensure top nav shows username
 
 ## 🚀 Live Demo
 
-> **Status:** Ready for deployment
-> 
-> Local development fully functional on `http://localhost:3000`
-> - Test account: `admin@example.com` / `password123`
+The app is live and ready to share.
+
+- Frontend (Vercel): https://client-git-main-boom-codes-projects.vercel.app
+- Backend (Railway API): https://url-shortener-production-c83f.up.railway.app
+- Example Short Link: https://url-shortener-production-c83f.up.railway.app/atefawef
+
+Tip: If you see `localhost` in any link preview, refresh the page — the UI now uses the production BASE_URL.
 
 ---
 
@@ -87,6 +100,26 @@ Transform long URLs into short, trackable links with powerful analytics. Built w
 - Bulk link management
 - One-click deletion
 - Auto-cleanup scripts
+
+## 🎤 Hiring Manager Pitch
+
+This project demonstrates end-to-end, production-grade engineering:
+- Full-Stack: React + TypeScript + Node/Express + PostgreSQL
+- Real Features: Auth, REST API, URL shortening, analytics, admin
+- Ops Ready: CI, environment config, migrations, error handling
+- Deployment: Frontend on Vercel; Backend + DB on Railway
+
+Live Links:
+- App: https://client-git-main-boom-codes-projects.vercel.app
+- API/Short Links: https://url-shortener-production-c83f.up.railway.app
+
+Talking points:
+- Built with modern patterns and strong security defaults
+- Clean UI with Tailwind + React Router
+- Analytics include geolocation and user agent breakdown
+- Ready to plug into custom domains when needed
+
+If you’d like custom domains or a branded landing page, see the Deployment Notes and I can wire it up quickly.
 
 ### 👨‍💼 Admin Tools
 - System-wide statistics
@@ -352,15 +385,52 @@ cd server
 npm run seed
 ```
 
-**Demo Accounts:**
-- 👤 Regular User: `user@example.com` / `password123`
-- 🛡️ Admin User: `admin@admin.com` / `admin123`
+**Demo Accounts (local only):**
+- Seed script creates demo users for local development.
+- Passwords are not published in this repository or in production.
+
+Note: Production deployments should not have default credentials. Use your own accounts.
 
 **Includes:** 5 sample technology URLs with synthetic click analytics for testing.
 
----
+## 🧭 Demo Walkthrough
 
-### Run Integration Tests
+Follow these steps to demo the app end-to-end:
+
+1. Open the frontend: `https://client-git-main-boom-codes-projects.vercel.app`
+2. Sign up or log in
+  - Create a new account, or use your existing admin account
+3. Create a short URL
+  - Enter an original URL (e.g. `https://example.com`)
+  - Optionally set a custom short code and expiration
+4. Copy the generated short link
+  - It will look like: `https://url-shortener-production-c83f.up.railway.app/<code>`
+5. Open the short link in a new tab
+  - Confirms redirect works
+6. Check analytics
+  - Go to `Analytics` from the URL row to see click metrics
+7. Visit Admin Panel
+  - `Admin` shows system stats, users, URLs, and clicks
+
+If anything looks off, confirm environment variables are set in production (see Deployment Notes below).
+
+## 📦 Deployment Notes (Production)
+
+Environment variables to verify after deployment:
+
+- Frontend (Vercel):
+  - `VITE_API_URL` = `https://url-shortener-production-c83f.up.railway.app`
+  - Optional: `VITE_BASE_URL` = `https://url-shortener-production-c83f.up.railway.app`
+
+- Backend (Railway):
+  - `DATABASE_URL` = provided by Railway Postgres
+  - `JWT_SECRET` = strong 32+ byte secret
+  - `NODE_ENV` = `production`
+  - `FRONTEND_URL` = your Vercel domain (wildcard allowed for previews)
+  - `BASE_URL` = `https://url-shortener-production-c83f.up.railway.app`
+
+After updating env vars, re-deploy both apps. Old database entries with `localhost` won’t change; create new URLs to see the production domain.
+
 
 ```bash
 cd server
@@ -682,10 +752,10 @@ docker run -d -p 5001:5001 --env-file .env yourusername/urlshortener-api:latest
 # Health check
 curl https://your-backend.railway.app/api/health
 
-# Test authentication
+# Test authentication (use your own credentials)
 curl -X POST https://your-backend.railway.app/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@admin.com","password":"admin123"}'
+  -d '{"email":"your-email@example.com","password":"your-password"}'
 ```
 
 ---
@@ -704,8 +774,8 @@ curl -X POST https://your-backend.railway.app/api/auth/login \
 curl -X POST http://localhost:5001/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "user@example.com",
-    "password": "password123"
+    "email": "your-email@example.com",
+    "password": "your-password"
   }'
 ```
 
@@ -715,7 +785,7 @@ curl -X POST http://localhost:5001/api/auth/login \
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   "user": {
     "id": 1,
-    "email": "user@example.com",
+    "email": "your-email@example.com",
     "isAdmin": false
   }
 }
@@ -817,24 +887,25 @@ curl http://localhost:5001/api/health
 
 ## 🛡️ Admin Access
 
-### Default Admin Account
+### Creating Admin Users
 
-After running `npm run seed`, use these credentials:
+**For Local Development:**
 
-```
-Email: admin@admin.com
-Password: admin123
+Run the seed script to create demo users (credentials in `server/src/scripts/seed.ts`):
+```bash
+cd server
+npm run seed
 ```
 
 **Admin Dashboard:** `http://localhost:3000/admin`
 
 ---
 
-### Creating Additional Admin Users
+### Grant Admin Access to Existing Users
 
-**Option 1: Update Existing User**
+**Option 1: Update User in Database**
 ```bash
-psql url_shortener -c "UPDATE users SET is_admin = true WHERE email = 'user@example.com';"
+psql url_shortener -c "UPDATE users SET is_admin = true WHERE email = 'your-email@example.com';"
 ```
 
 **Option 2: Run Admin Migration**
