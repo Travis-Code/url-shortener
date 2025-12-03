@@ -10,6 +10,7 @@ import authRoutes from './routes/auth';
 import urlRoutes from './routes/urls';
 import diagnosticsRoutes from './routes/diagnostics';
 import adminRoutes from './routes/admin';
+import setupRoutes from './routes/setup';
 import { logger } from './utils/logger';
 
 dotenv.config();
@@ -54,6 +55,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/urls', urlRoutes);
 app.use('/api/diag', diagnosticsRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/setup', setupRoutes);
 
 // Health check
 app.get('/api/health', (_req, res) => {
